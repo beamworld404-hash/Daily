@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 # 构建日报静态站，并把构建产物（仅产物）发布到公开仓库的 main 分支根目录（GitHub Pages 用户站点）。
-# 用法：bash deploy/publish-pages.sh [--dry-run]
-#   --dry-run  只构建并在临时目录生成提交，不推送
+# 用法：bash deploy/publish-pages.sh [--dry-run] [--from-dist DIR]
+#   --dry-run         只构建并在临时目录生成提交，不推送
+#   --from-dist DIR   不重新构建，直接发布 DIR 里已构建好的产物（apply-report.sh 用，保证与 nginx 同一份构建）
+# 末尾输出一行机器可读结果：PAGES_RESULT=pushed <hash> | unchanged | dry-run <hash>
 # 可重复执行：每次用新构建的产物整体替换公开仓库内容；内容无变化时不提交。
 #
 # 说明：
@@ -15,7 +17,15 @@ APP="$REPO/web/app"
 REMOTE="${PAGES_REMOTE:-git@github.com-pages:beamworld404-hash/beamworld404-hash.github.io.git}"
 BRANCH=main
 DRY_RUN=0
-[[ "${1:-}" == "--dry-run" ]] && DRY_RUN=1
+FROM_DIST=""
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --dry-run) DRY_RUN=1 ;;
+    --from-dist) FROM_DIST="${2:?--from-dist 需要目录参数}"; shift ;;
+    *) echo "未知参数：$1" >&2; exit 2 ;;
+  esac
+  shift
+done
 
 WORK="$(mktemp -d)"
 trap 'rm -rf "$WORK"' EXIT
@@ -28,13 +38,17 @@ if [[ -n "$(git -C "$REPO" status --porcelain -- web)" ]]; then
   SRC_REV="$SRC_REV-dirty"
 fi
 
-# 1. 构建（与 npm run build 相同的检查 + 类型检查，输出到临时目录）
-(
-  cd "$APP"
-  npm run check
-  npx tsc -b
-  npx vite build --outDir "$OUT" --emptyOutDir
-)
+# 1. 构建（与 npm run build 相同的检查 + 类型检查，输出到临时目录）；--from-dist 时直接用现成产物
+if [[ -n "$FROM_DIST" ]]; then
+  OUT="$(cd "$FROM_DIST" && pwd)"
+else
+  (
+    cd "$APP"
+    npm run check
+    npx tsc -b
+    npx vite build --outDir "$OUT" --emptyOutDir
+  )
+fi
 [[ -f "$OUT/index.html" ]] || { echo "构建失败：缺少 index.html" >&2; exit 1; }
 
 # 2. 取公开仓库（空仓库时新建）
@@ -49,6 +63,7 @@ fi
 # 3. 用新产物整体替换内容
 find "$SITE" -mindepth 1 -maxdepth 1 ! -name .git -exec rm -rf {} +
 cp -R "$OUT"/. "$SITE"/
+rm -f "$SITE/.source"   # apply-report.sh 写在 nginx 发布目录里的来源标记，不发布
 touch "$SITE/.nojekyll"
 cat > "$SITE/README.md" <<'EOF'
 # 关注清单日报
@@ -63,6 +78,7 @@ cd "$SITE"
 git add -A
 if git diff --cached --quiet && git rev-parse --verify -q HEAD >/dev/null; then
   echo "产物无变化，无需发布。"
+  echo "PAGES_RESULT=unchanged"
   exit 0
 fi
 # 公开仓库用 noreply 身份提交，避免暴露个人邮箱
@@ -74,7 +90,9 @@ git ls-files
 
 if [[ $DRY_RUN -eq 1 ]]; then
   echo "--dry-run：未推送。"
+  echo "PAGES_RESULT=dry-run $(git rev-parse --short HEAD)"
   exit 0
 fi
-git push origin "$BRANCH"
+git push --quiet origin "$BRANCH"
 echo "已推送到 $REMOTE ($BRANCH)"
+echo "PAGES_RESULT=pushed $(git rev-parse --short HEAD)"
