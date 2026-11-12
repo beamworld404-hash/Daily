@@ -281,7 +281,7 @@ export function HomePage() {
   );
 }
 
-/** 书卡配色：底色 / 字色，大号衬线字对比度 ≥ 3:1 */
+/** 书卡配色：底色 / 字色，大号标题字对比度 ≥ 3:1 */
 const CARD_COLORS: [string, string][] = [
   ["#e54f10", "#ffffc2"],
   ["#f6ebd9", "#524733"],

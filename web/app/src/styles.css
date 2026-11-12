@@ -1,6 +1,7 @@
 /*
  * 关注清单日报 · 版式
- * 对标参考站的作品库页面：白底 + stone 灰阶、大号衬线标题配无衬线正文、
+ * 对标参考站的作品库页面：白底 + stone 灰阶；全站只用一套苹果系统字体（Apple 设备上为 San Francisco
+ * 与苹方），标题、正文、数字、图表一律同一字族，不加载任何网页字体；
  * 主页为 456px 居中日期列表 + 底部扇形书卡；一期全文页为 576px 正文列（与参考站文章页
  * max-w-xl = 36rem 一致）+ 左侧固定「← 全部日报」与整期目录（窄屏收进「目录」抽屉）。
  */
@@ -20,8 +21,23 @@
   --danger: #b91c1c;
   --ok: #15803d;
 
-  --serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Source Han Serif SC", "Noto Serif CJK SC", "Noto Serif SC", "Songti SC", STSong, Georgia, serif;
-  --sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+  /*
+   * 全站唯一字体栈：苹果系统自带字体。Apple 设备上 -apple-system / BlinkMacSystemFont 落到 San Francisco，
+   * 中文落到苹方；其它系统依次退到各自的系统无衬线字体。数字不另配字体，只开等宽数字特性。
+   */
+  --font: -apple-system, BlinkMacSystemFont, system-ui, "PingFang SC", "Hiragino Sans GB", "Helvetica Neue", "Segoe UI", Roboto, "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+
+  /* 关键数字着色：恐惧与贪婪五档、涨跌、冷热。浅色底上对比度均 ≥ 4.5:1 */
+  --t-xfear: #b91c1c;
+  --t-fear: #c2410c;
+  --t-neutral: #a16207;
+  --t-greed: #15803d;
+  --t-xgreed: #166534;
+  --t-up: #15803d;
+  --t-down: #b91c1c;
+  --t-flat: #78716c;
+  --t-cold: #1d4ed8;
+  --t-hot: #c2410c;
 
   color-scheme: light;
 }
@@ -40,6 +56,16 @@
   --warn: #f59e0b;
   --danger: #f87171;
   --ok: #4ade80;
+  --t-xfear: #f87171;
+  --t-fear: #fb923c;
+  --t-neutral: #facc15;
+  --t-greed: #4ade80;
+  --t-xgreed: #22c55e;
+  --t-up: #4ade80;
+  --t-down: #f87171;
+  --t-flat: #a8a29e;
+  --t-cold: #60a5fa;
+  --t-hot: #fb923c;
   color-scheme: dark;
 }
 
@@ -50,6 +76,7 @@
 }
 
 html {
+  font-family: var(--font);
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
 }
@@ -58,7 +85,6 @@ body {
   margin: 0;
   background: var(--bg);
   color: var(--ink);
-  font-family: var(--sans);
   font-size: 16px;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
@@ -76,6 +102,13 @@ figure {
 
 a {
   color: inherit;
+}
+
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
 }
 
 :focus-visible {
@@ -122,8 +155,8 @@ a {
   border-radius: 4px;
   background: var(--strong);
   color: var(--bg);
-  font-family: var(--serif);
-  font-size: 18px;
+  font-size: 17px;
+  font-weight: 600;
   line-height: 1;
   text-decoration: none;
 }
@@ -156,10 +189,10 @@ a {
 }
 
 .display {
-  font-family: var(--serif);
-  font-weight: 400;
-  font-size: 48px;
-  line-height: 56px;
+  font-weight: 700;
+  font-size: 44px;
+  line-height: 52px;
+  letter-spacing: -0.02em;
   color: var(--strong);
   margin-bottom: 16px;
   text-wrap: balance;
@@ -290,9 +323,10 @@ a {
 
 .book-title {
   display: block;
-  font-family: var(--serif);
-  font-size: 24px;
+  font-size: 22px;
   line-height: 26px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
   white-space: pre-line;
 }
 
@@ -460,9 +494,8 @@ a {
 }
 
 .chapter-title {
-  font-family: var(--serif);
-  font-weight: 400;
-  font-size: 36px;
+  font-weight: 700;
+  font-size: 32px;
   line-height: 40px;
   letter-spacing: -0.025em;
   color: var(--strong);
@@ -492,10 +525,10 @@ a {
   margin-top: 48px;
   padding-bottom: 8px;
   border-bottom: 1px solid var(--line);
-  font-family: var(--serif);
-  font-weight: 400;
-  font-size: 24px;
-  line-height: 32px;
+  font-weight: 600;
+  font-size: 22px;
+  line-height: 30px;
+  letter-spacing: -0.01em;
   color: var(--strong);
   scroll-margin-top: 32px;
 }
@@ -571,17 +604,19 @@ a {
 
 .figure-value {
   margin-top: 4px;
-  font-family: var(--serif);
   font-size: 32px;
   line-height: 1.2;
+  font-weight: 600;
+  letter-spacing: -0.01em;
   color: var(--strong);
   font-variant-numeric: tabular-nums;
 }
 
 .figure-unit {
   margin-left: 6px;
-  font-family: var(--sans);
   font-size: 14px;
+  font-weight: 400;
+  letter-spacing: 0;
   color: var(--faint);
 }
 
@@ -596,15 +631,15 @@ a {
   padding: 16px 20px;
   border-radius: 12px;
   background: var(--panel);
-  border-left: 3px solid var(--line);
 }
 
-.note-warning {
-  border-left-color: var(--warn);
+/* 提示框的轻重只体现在标题颜色上，不加任何单边描边 */
+.note-warning .note-title {
+  color: var(--warn);
 }
 
-.note-danger {
-  border-left-color: var(--danger);
+.note-danger .note-title {
+  color: var(--danger);
 }
 
 .note-title {
@@ -694,7 +729,7 @@ td:first-child {
 }
 
 .chart-bar.is-latest {
-  background: var(--accent);
+  background: var(--latest, var(--accent));
   opacity: 1;
 }
 
@@ -704,7 +739,7 @@ td:first-child {
   top: -22px;
   font-size: 12px;
   line-height: 16px;
-  color: var(--strong);
+  color: var(--latest, var(--strong));
   white-space: nowrap;
   font-variant-numeric: tabular-nums;
 }
@@ -743,6 +778,31 @@ td:first-child {
 .chart-table .table-wrap {
   margin-top: 8px;
 }
+
+/* 关键数字着色：颜色表达含义（恐惧/贪婪区间、涨跌、冷热），见 src/lib/tone.ts */
+.tone {
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+.tone-xfear { color: var(--t-xfear); }
+.tone-fear { color: var(--t-fear); }
+.tone-neutral { color: var(--t-neutral); }
+.tone-greed { color: var(--t-greed); }
+.tone-xgreed { color: var(--t-xgreed); }
+.tone-up { color: var(--t-up); }
+.tone-down { color: var(--t-down); }
+.tone-flat { color: var(--t-flat); }
+.tone-cold { color: var(--t-cold); }
+.tone-hot { color: var(--t-hot); }
+.tone-mild { color: var(--strong); }
+
+/* 柱状图最新一根随语义着色 */
+.chart-tone-up { --latest: var(--t-up); }
+.chart-tone-down { --latest: var(--t-down); }
+.chart-tone-flat { --latest: var(--t-flat); }
+.chart-tone-cold { --latest: var(--t-cold); }
+.chart-tone-hot { --latest: var(--t-hot); }
 
 /* 新池榜单 */
 .entries {

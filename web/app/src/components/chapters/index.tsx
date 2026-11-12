@@ -3,6 +3,7 @@ import type { CheckStatus, Report } from "@/lib/types";
 import { arrow, changePct, mmdd, moved, num, pct, usd, zhDay, zhWeekday } from "@/lib/format";
 import { Ext, Rich } from "@/lib/rich";
 import { Columns, Note, Pill, Table, Term } from "@/components/ui";
+import { dirTone, fngTone, heatTone, toneClass, trenchTone } from "@/lib/tone";
 
 /** 一章 = 全文页里的一个二级标题；一节 = 章下的三级标题。章、节都是左侧整期目录的一项 */
 export type Section = { id: string; title: string; body: ReactNode };
@@ -87,17 +88,20 @@ function onchain(r: Report): Chapter | null {
             <div className="figure">
               <p className="figure-label">{mmdd(fng.latest.date)} 读数</p>
               <p className="figure-value">
-                {fng.latest.value}
+                <span className={toneClass(fngTone(fng.latest.value))}>{fng.latest.value}</span>
                 <span className="figure-unit">/ 100</span>
               </p>
-              <p className="figure-sub">{fng.latest.class_zh}</p>
+              <p className={`figure-sub ${toneClass(fngTone(fng.latest.value))}`}>{fng.latest.class_zh}</p>
             </div>
             {fng.previous && d !== null ? (
               <div className="figure">
                 <p className="figure-label">较 {mmdd(fng.previous.date)}</p>
-                <p className="figure-value">{moved(d, "点")}</p>
+                <p className={`figure-value ${toneClass(dirTone(d))}`}>{moved(d, "点")}</p>
                 <p className="figure-sub">
-                  前值 {fng.previous.value}（{fng.previous.class_zh}）
+                  前值{" "}
+                  <span className={toneClass(fngTone(fng.previous.value))}>
+                    {fng.previous.value}（{fng.previous.class_zh}）
+                  </span>
                 </p>
               </div>
             ) : null}
@@ -120,15 +124,20 @@ function onchain(r: Report): Chapter | null {
         body: (
           <>
             <p>
-              UTC {revenue.dates[revenue.dates.length - 1]} 收入 <strong className="term">{usd(latest)}</strong>
+              UTC {revenue.dates[revenue.dates.length - 1]} 收入{" "}
+              <strong className={`term${delta !== null ? ` ${toneClass(dirTone(delta))}` : ""}`}>{usd(latest)}</strong>
               {delta !== null ? (
                 <>
-                  ，较前一日 {arrow(delta)} {pct(Math.abs(delta))}
+                  ，较前一日{" "}
+                  <span className={toneClass(dirTone(delta))}>
+                    {arrow(delta)} {pct(Math.abs(delta))}
+                  </span>
                 </>
               ) : null}
               {p.ath ? (
                 <>
-                  ，占历史最高 {usd(p.ath.usd)}（{p.ath.date}）的 {pct((latest / p.ath.usd) * 100)}
+                  ，占历史最高 {usd(p.ath.usd)}（{p.ath.date}）的{" "}
+                  <span className={toneClass(heatTone((latest / p.ath.usd) * 100))}>{pct((latest / p.ath.usd) * 100)}</span>
                 </>
               ) : null}
               。
@@ -136,6 +145,7 @@ function onchain(r: Report): Chapter | null {
             <Columns
               label={`${p.name} 日收入`}
               format={usd}
+              tone={delta !== null ? dirTone(delta) : undefined}
               points={revenue.dates.map((d, i) => ({ key: d, tick: ticks[i], value: p.values[i] }))}
             />
             {p.url ? (
@@ -187,19 +197,20 @@ function trench(r: Report): Chapter | null {
             <div className="figure">
               <p className="figure-label">{mmdd(tr.date)} 分数</p>
               <p className="figure-value">
-                {tr.score}
+                <span className={toneClass(trenchTone(tr.score, tr.label))}>{tr.score}</span>
                 <span className="figure-unit">/ 100</span>
               </p>
-              <p className="figure-sub">
+              <p className={`figure-sub ${toneClass(trenchTone(tr.score, tr.label))}`}>
                 {tr.label_zh ?? tr.label}（{tr.label}）
               </p>
             </div>
           </div>
-          {tr.note ? <p>{tr.note}</p> : null}
+          {tr.note ? <p><Rich text={tr.note} /></p> : null}
           {tr.history?.length ? (
             <Columns
               label="Trench 分数"
               format={String}
+              tone={trenchTone(tr.score, tr.label)}
               points={tr.history.map((h) => ({ key: h.date, tick: mmdd(h.date), value: h.score }))}
             />
           ) : null}
@@ -211,7 +222,7 @@ function trench(r: Report): Chapter | null {
                 columns={[
                   { label: "分项", cell: (c) => c.name },
                   { label: "数值", cell: (c) => (c.usd !== undefined ? usd(c.usd) : c.count !== undefined ? num(c.count) : "--"), num: true },
-                  { label: "历史分位", cell: (c) => `${c.percentile}`, num: true },
+                  { label: "历史分位", cell: (c) => <span className={toneClass(heatTone(c.percentile))}>{c.percentile}</span>, num: true },
                 ]}
               />
               {tr.components_note ? <p className="meta">{tr.components_note}</p> : null}
@@ -363,7 +374,7 @@ function defined(r: Report): Chapter | null {
       ),
     },
   ];
-  if (d.changes) sections.push({ id: "changes", title: "与上一榜对比", body: <p>{d.changes}</p> });
+  if (d.changes) sections.push({ id: "changes", title: "与上一榜对比", body: <p><Rich text={d.changes} /></p> });
   sections.push({
     id: "defined-method",
     title: "取榜方法",

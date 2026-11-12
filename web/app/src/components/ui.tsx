@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { useTheme } from "@/lib/theme";
+import type { Tone } from "@/lib/tone";
 
 /** 描边胶囊标签（对应参考站列表右侧的 NEW） */
 export function Pill({ children, tone = "accent" }: { children: ReactNode; tone?: "accent" | "muted" }) {
@@ -71,15 +72,18 @@ export function Columns({
   points,
   format,
   label,
+  tone,
 }: {
   points: { key: string; tick: string; value: number }[];
   format: (v: number) => string;
   label: string;
+  /** 最新一根柱与数值的语义色（涨跌、冷热）；不给则用强调色 */
+  tone?: Tone;
 }) {
   const max = Math.max(...points.map((p) => p.value), 0) || 1;
   const last = points.length - 1;
   return (
-    <figure className="chart">
+    <figure className={`chart${tone ? ` chart-tone-${tone}` : ""}`}>
       <div className="chart-plot" aria-hidden="true">
         {points.map((p, i) => (
           <div className="chart-slot" key={p.key} title={`${p.tick}　${format(p.value)}`}>
