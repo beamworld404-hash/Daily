@@ -241,7 +241,7 @@ else
   mv -T "$DAILY_SITE/.current.tmp" "$DAILY_SITE/current"   # rename(2)：原子替换，不会出现空目录
   NGINX_RELEASE="$REL"
   say "nginx 站点根已切换到 $REL"
-  code="$(curl -s -o "$WORK/live.html" -w '%{http_code}' http://127.0.0.1/ || true)"
+  code="$(curl -s -o "$WORK/live.html" -w '%{http_code}' "${DAILY_CHECK_URL:-http://127.0.0.1/}" || true)"
   if [[ "$code" != 200 ]] || ! cmp -s "$WORK/live.html" "$REL/index.html"; then
     if [[ -n "$CUR_DIR" ]]; then
       ln -sfn "$CUR_DIR" "$DAILY_SITE/.current.tmp"; mv -T "$DAILY_SITE/.current.tmp" "$DAILY_SITE/current"
@@ -249,7 +249,7 @@ else
     fi
     fail "nginx 自检失败（HTTP $code 或首页与新构建不一致），已回滚到 $CUR_DIR"
   fi
-  say "nginx 自检通过（http://127.0.0.1/ 200）"
+  say "nginx 自检通过（${DAILY_CHECK_URL:-http://127.0.0.1/} 200）"
   # 只保留最近 5 个发布目录（当前目录一定保留）
   ls -1d "$DAILY_SITE"/releases/2* 2>/dev/null | sort -r | tail -n +6 | while read -r old; do
     [[ "$old" == "$(readlink -f "$DAILY_SITE/current")" ]] || rm -rf "$old"

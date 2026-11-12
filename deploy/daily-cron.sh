@@ -26,7 +26,8 @@ while [[ $# -gt 0 ]]; do
   shift
 done
 DATE="${DATE:-$(today_sh)}"
-if (( 10#$(date +%H%M) >= 1030 )); then FINAL=1; fi
+# DAILY_FAKE_HHMM 仅供测试覆盖当前时刻（如 0915）
+if (( 10#${DAILY_FAKE_HHMM:-$(date +%H%M)} >= 1030 )); then FINAL=1; fi
 
 mkdir -p "$DAILY_LOGS"
 LOG="$(log_file "$DATE")"

@@ -3,7 +3,7 @@
 # 用法：bash deploy/publish-pages.sh [--dry-run] [--from-dist DIR]
 #   --dry-run         只构建并在临时目录生成提交，不推送
 #   --from-dist DIR   不重新构建，直接发布 DIR 里已构建好的产物（apply-report.sh 用，保证与 nginx 同一份构建）
-# 末尾输出一行机器可读结果：PAGES_RESULT=pushed <hash> | unchanged | dry-run <hash>
+# 末尾输出一行机器可读结果：PAGES_RESULT=pushed|unchanged|dry-run <公开仓库提交>
 # 可重复执行：每次用新构建的产物整体替换公开仓库内容；内容无变化时不提交。
 #
 # 说明：
@@ -78,7 +78,7 @@ cd "$SITE"
 git add -A
 if git diff --cached --quiet && git rev-parse --verify -q HEAD >/dev/null; then
   echo "产物无变化，无需发布。"
-  echo "PAGES_RESULT=unchanged"
+  echo "PAGES_RESULT=unchanged $(git rev-parse --short HEAD)"
   exit 0
 fi
 # 公开仓库用 noreply 身份提交，避免暴露个人邮箱
