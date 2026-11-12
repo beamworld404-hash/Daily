@@ -1,12 +1,22 @@
+import { useEffect } from "react";
 import { reports } from "@/lib/reports";
+import { useRoute } from "@/lib/route";
+import { zhDay } from "@/lib/format";
+import { ArchivePage, ChapterPage, IssuePage, NotFound } from "@/components/pages";
 
-/** 临时占位：affectUI 已移除，新界面见后续提交。 */
 export function App() {
-  const r = reports[0];
-  return (
-    <main>
-      <h1>关注清单日报</h1>
-      {r ? <p>{r.date} {r.edition}：{r.summary}</p> : <p>还没有日报。</p>}
-    </main>
-  );
+  const route = useRoute();
+  const date = route.kind === "archive" ? null : route.date ?? reports[0]?.date ?? null;
+  const report = date ? reports.find((r) => r.date === date) : undefined;
+
+  useEffect(() => {
+    document.title =
+      route.kind === "archive" ? "往期 · 关注清单日报" : report ? `${zhDay(report.date)} ${report.edition} · 关注清单日报` : "关注清单日报";
+  }, [route.kind, report]);
+
+  if (route.kind === "archive") return <ArchivePage />;
+  if (!reports.length) return <NotFound what="还没有日报。新增 web/content/reports/YYYY-MM-DD.json 后重新构建。" />;
+  if (!report) return <NotFound what={`没有 ${date} 这一期。`} />;
+  if (route.kind === "chapter") return <ChapterPage report={report} chapterId={route.chapter} sectionId={route.section} />;
+  return <IssuePage report={report} />;
 }

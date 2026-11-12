@@ -8,7 +8,7 @@
 
 ## 关注清单日报网站
 
-日报通过独立网站交付，用普通浏览器打开，不再用 Grok Bot Page，也不再在聊天里发报告。前端是 React 19 + Vite，数据来自 `web/content/reports/*.json`。代码与完整说明在 [`web/`](web/README.md)。
+日报通过独立网站交付，用普通浏览器打开，不再用 Grok Bot Page，也不再在聊天里发报告。前端是 React 19 + Vite，数据来自 `web/content/reports/*.json`。代码与完整说明在 [`web/`](web/README.md)。版式为「期目录 → 章节文章」的阅读型网站，设计说明见 [`web/README.md`](web/README.md#设计说明)。
 
 ```bash
 cd web/app
