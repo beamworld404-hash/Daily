@@ -1,0 +1,440 @@
+{
+  "schema_version": 1,
+  "date": "2026-11-12",
+  "edition": "早报",
+  "issued_at": "2026-11-12 09:00",
+  "coverage": "自上次正式早报 2026-11-11 08:50:22（北京时间）至今，并包含上一自然日 2026-11-11。取数自 08:33:11 起。",
+  "summary": "DefiLlama 已公布 UTC 11-10 完整日：GMGN 收入 $172.49K（占历史最高 3.01%），FOMO $300.01K（占 16.26%）；FOMO 昨早报道的 11-09 数字已被数据源修订。TehcScreener 已同步，主要数据日为 11-10，Trench 37（冷）。恐惧贪婪指数 28（恐惧），较 11-11 的 29 下降 1 点。",
+  "highlights": [
+    "DefiLlama 最新完整日已更新为 UTC 2026-11-10：FOMO 收入 $300.01K，占历史最高 16.26%；GMGN $172.49K，占 3.01%。",
+    "TehcScreener 管道已同步（synced_at 为 2026-11-11 23:33:05 北京时间），Trench 11-10 为 37（冷），较 11-09 的 36 升 1 分。",
+    "恐惧贪婪指数 28（恐惧），较上一日降 1 点。",
+    "Defined 新池观察榜新上 Max、vibeshift、CHICK、HUNG，仅 mihao 仍在榜。",
+    "r/Monad 自上次正式早报以来有 3 篇新帖；rarefriends 公开仓库与 PR 暂无新更新。",
+    "X 摘要只覆盖今早约 75 分钟抽样，不是全量。"
+  ],
+  "notices": [
+    {
+      "tone": "warning",
+      "title": "数据修订",
+      "text": "FOMO 的 UTC 11-09 读数已由数据源从昨早报道的 $85.17K 修订为 $288.99K，所以不能把 11-10 写成相对旧数字的大幅跳升。下方图表 11-09 柱使用修订后的值。"
+    }
+  ],
+  "fng": {
+    "source": "Alternative.me",
+    "latest": { "date": "2026-11-12", "value": 28, "class_en": "Fear", "class_zh": "恐惧" },
+    "previous": { "date": "2026-11-11", "value": 29, "class_en": "Fear", "class_zh": "恐惧" }
+  },
+  "revenue": {
+    "source": "DefiLlama dailyRevenue",
+    "caption": "最新完整日 UTC 2026-11-10。UTC 11-11 尚未出现在图表中。不是实时行情。",
+    "dates": [
+      "2026-10-28", "2026-10-29", "2026-10-30", "2026-10-31", "2026-11-01",
+      "2026-11-02", "2026-11-03", "2026-11-04", "2026-11-05", "2026-11-06",
+      "2026-11-07", "2026-11-08", "2026-11-09", "2026-11-10"
+    ],
+    "protocols": [
+      {
+        "name": "FOMO",
+        "url": "https://defillama.com/protocol/fomo",
+        "values": [
+          305435.01, 482949.03, 374169, 208556, 189674, 267409, 292890, 369525,
+          308572, 270335, 215908.02, 244925, 288990.01, 300012
+        ],
+        "ath": { "usd": 1844534, "date": "2026-09-04" }
+      },
+      {
+        "name": "GMGN",
+        "url": "https://defillama.com/protocol/gmgn",
+        "values": [
+          237695, 187262, 199668, 138176, 127341, 93445, 158385, 150084, 173678,
+          162335, 127465, 145697, 179035, 172487
+        ],
+        "ath": { "usd": 5737132, "date": "2025-10-08" }
+      }
+    ],
+    "notes": [
+      "FOMO 的 UTC 11-09 读数已由 DefiLlama 从昨早报道的 $85.17K 修订为 $288.99K；图表 11-09 柱使用修订后的值。GMGN 的 11-09 读数与昨早一致，仍为 $179.04K。"
+    ]
+  },
+  "tehc": {
+    "source": "tehcscreener.com，底层 Allium",
+    "caption": "已重新取数。status.synced_at 变为 2026-11-11 15:33:05 UTC（23:33:05 北京时间）。Trench、发射台与机器人的 through 为 2026-11-10。",
+    "trench": {
+      "date": "2026-11-10",
+      "score": 37,
+      "label": "cold",
+      "label_zh": "冷",
+      "note": "较已公布的 11-09 分数 36 上升 1 分；历史中 11-09 仍为 36，未见同日修订。",
+      "history": [
+        { "date": "2026-11-06", "score": 30 },
+        { "date": "2026-11-07", "score": 28 },
+        { "date": "2026-11-08", "score": 26 },
+        { "date": "2026-11-09", "score": 36 },
+        { "date": "2026-11-10", "score": 37 }
+      ],
+      "components": [
+        { "name": "发射台成交额", "usd": 1050352557.4107416, "percentile": 29 },
+        { "name": "新发射", "count": 76257, "percentile": 73 },
+        { "name": "机器人成交额", "usd": 174080930.4203473, "percentile": 32 },
+        { "name": "机器人手续费", "usd": 1181347.8717953796, "percentile": 20 }
+      ],
+      "components_note": "分项合计与发射台、机器人接口汇总不必相同，分别按各自接口列示。"
+    },
+    "launchpads": {
+      "caption": "window=1d，截至 2026-11-10。",
+      "total": { "volume_usd": 313625991.960529, "launches": 41964 },
+      "rows": [
+        { "name": "solana / pumpfun", "volume_usd": 275899695.3909415, "launches": 40607 },
+        { "name": "robinhood / ponsfamily", "volume_usd": 17850161.68641012, "launches": 727 },
+        { "name": "solana / stonk", "volume_usd": 13137009.529210163, "launches": 336 },
+        { "name": "robinhood / long", "volume_usd": 3092009.877771891, "launches": 178 },
+        { "name": "solana / letsbonk", "volume_usd": 2131102.999238023, "launches": 16 },
+        { "name": "solana / Rise", "volume_usd": 908461.0601080958, "launches": 44 },
+        { "name": "arc / argus", "volume_usd": 366645.01374759054, "launches": 8 },
+        { "name": "base / The Stonks Exchange", "volume_usd": 173240.5418148143, "launches": 11 },
+        { "name": "robinhood / flap", "volume_usd": 67665.86128683932, "launches": 37 }
+      ]
+    },
+    "bots": {
+      "caption": "window=1d，截至 2026-11-10。",
+      "total": { "volume_usd": 173473519.71, "fees_usd": 1178116.97 },
+      "rows": [
+        { "name": "Axiom", "volume_usd": 50777340.61, "fees_usd": 425778.38 },
+        { "name": "fomo", "volume_usd": 44362150.63, "fees_usd": 184969.64 },
+        { "name": "pumpfun app", "volume_usd": 29589123.39, "fees_usd": 80835.5 },
+        { "name": "GMGN", "volume_usd": 26341130.92, "fees_usd": 273726.61 },
+        { "name": "Terminal", "volume_usd": 11225318.56, "fees_usd": 139416.87 },
+        { "name": "Basedbot", "volume_usd": 8408893.86, "fees_usd": 44221.79 },
+        { "name": "Trojan", "volume_usd": 1232540.19, "fees_usd": 13427.9 },
+        { "name": "Maestro", "volume_usd": 680735.17, "fees_usd": 5034.14 },
+        { "name": "Bonkbot", "volume_usd": 443703.17, "fees_usd": 6463.78 },
+        { "name": "Photon", "volume_usd": 412583.21, "fees_usd": 4242.36 }
+      ],
+      "warning": "TehcScreener 中 GMGN 手续费 $273.73K、FOMO 手续费 $184.97K，与 DefiLlama dailyRevenue（GMGN $172.49K、FOMO $300.01K，均为 UTC 11-10）口径不同，不可直接对照或替换。"
+    },
+    "chains": {
+      "caption": "TehcScreener /chains。Solana、Base、Robinhood、HyperEVM、Arc 的 latest 截至 2026-11-10；Elysium 截至 2026-11-11，日期不一致。",
+      "rows": [
+        { "name": "Solana", "dex_volume_usd": 2950838862.0193076, "wallets": 839142, "date": "2026-11-10" },
+        { "name": "Base", "dex_volume_usd": 1142830565.8522437, "wallets": 68110, "date": "2026-11-10" },
+        { "name": "Robinhood", "dex_volume_usd": 1046640325.4189118, "wallets": 66659, "date": "2026-11-10" },
+        { "name": "HyperEVM", "dex_volume_usd": 91974826.57953906, "wallets": 3913, "date": "2026-11-10" },
+        { "name": "Elysium", "dex_volume_usd": 62261823.89482434, "wallets": 45980, "date": "2026-11-11" },
+        { "name": "Arc", "dex_volume_usd": 24052914.388952482, "wallets": 3907, "date": "2026-11-10" }
+      ]
+    }
+  },
+  "defined": {
+    "title": "Defined 新池 ≤24h · Codex 4 小时热度前 5",
+    "fetched_at": "2026-11-12 08:34:02（北京时间）",
+    "caption": "一次 filterPairs，回滚 24 小时，4.368 CU。已按链+精确合约过滤双边均为公认主流资产的池。这是新池观察榜，不一定是新发行代币；排序用 Codex 官方 trendingScore4（4 小时），不等同 DexScreener Trending 6H。非交易建议。",
+    "changes": "与昨午 14:23 榜相比：新上 Max、vibeshift、CHICK、HUNG；mihao 由第 1 降至第 3；HOLD、ORVIX、VEYL、PayCat 掉出。",
+    "tokens": [
+      {
+        "symbol": "Max",
+        "chain": "sol",
+        "url": "https://www.defined.fi/token/sol/5qaP7oKUqKffwwo5DaEqDoTtsBLMpdbQTxEkCDaTpump",
+        "liquidity_usd": 146234,
+        "volume_24h_usd": 46446066,
+        "status": "新上",
+        "narrative": null
+      },
+      {
+        "symbol": "vibeshift",
+        "chain": "sol",
+        "url": "https://www.defined.fi/token/sol/8xMxrxPTCYJRwumZEpMfkRjNry4UJoRy75J4B96eJTkM",
+        "liquidity_usd": 9150,
+        "volume_24h_usd": 1158604,
+        "status": "新上",
+        "narrative": null
+      },
+      {
+        "symbol": "mihao",
+        "chain": "sol",
+        "url": "https://www.defined.fi/token/sol/4CxjZyMNoF1p6eXHXHv1TWpS2X47CuUmLwtGe18spump",
+        "liquidity_usd": 6921,
+        "volume_24h_usd": 845855,
+        "status": "1 → 3",
+        "narrative": "官方网站 [mihao.fun](https://mihao.fun/) 自称「你好猫」迷因系列，并公示了与本榜相同的合约。今日上榜的是该代币与 USDC 的池，不是昨午榜上的 mihao/SOL 池。"
+      },
+      {
+        "symbol": "CHICK",
+        "chain": "sol",
+        "url": "https://www.defined.fi/token/sol/55TB1G3TedWG1kdeZeBjTpGUq7C1Kk917j4cdmaDpump",
+        "liquidity_usd": 5715,
+        "volume_24h_usd": 382380,
+        "status": "新上",
+        "narrative": null
+      },
+      {
+        "symbol": "HUNG",
+        "chain": "sol",
+        "url": "https://www.defined.fi/token/sol/4xgqefa5WcdHWKXzqvM9MRJqWYGaHVEUnpUL4Vq5pump",
+        "liquidity_usd": 24462,
+        "volume_24h_usd": 113755,
+        "status": "新上",
+        "narrative": null
+      }
+    ],
+    "method": "全部受支持主网，按抓取时刻回滚 24 小时；流动性≥$1.00K、24h 成交额≥$1.00K、24h 交易≥10 笔；按 trendingScore4 降序取 40 条后，去掉双边均为稳定币或 wrapped native 等主流资产的池（本次去掉 3 个），再按合约+链去重取前 5。金额截至 08:34:02（北京时间）。Max、vibeshift、CHICK、HUNG 未找到可核对合约的公开项目资料。"
+  },
+  "reddit": {
+    "subreddit": "r/Monad",
+    "url": "https://www.reddit.com/r/Monad/",
+    "since": "2026-11-11 08:50（北京时间）",
+    "summary": "新帖 RSS 可见 3 篇新帖。/u/Life-Atmosphere-8337 两次介绍 GroupPot，称要让 Ajo、Susu 等传统集体储蓄圈更透明、可问责，并附演示，还说移动应用即将推出。/u/Holywizy 转述 Fling 团队发文称项目不会停、从未被盗、没有外部融资，并问在当前市场里继续交付的小型 Monad 团队近况。",
+    "note": "以上来自帖文标题和正文摘要；本次未取评论 RSS，没有可见评论可写，评论数记为 --。这是论坛讨论，不是行情判断。",
+    "posts": [
+      {
+        "title": "We built GroupPot to make Ajo and group savings safer. Here's a quick demo!",
+        "url": "https://www.reddit.com/r/Monad/comments/1xtos26/we_built_grouppot_to_make_ajo_and_group_savings/",
+        "author": "/u/Life-Atmosphere-8337",
+        "comments": null
+      },
+      {
+        "title": "Fling's team posted today that they're not going anywhere. How are small Monad builders holding up?",
+        "url": "https://www.reddit.com/r/Monad/comments/1xtfelf/flings_team_posted_today_that_theyre_not_going/",
+        "author": "/u/Holywizy",
+        "comments": null
+      },
+      {
+        "title": "We built GroupPot to make Ajo, Susu and traditional group savings safer. Here's a demo.",
+        "url": "https://www.reddit.com/r/Monad/comments/1xteuxv/we_built_grouppot_to_make_ajo_susu_and/",
+        "author": "/u/Life-Atmosphere-8337",
+        "comments": null
+      }
+    ]
+  },
+  "github": {
+    "org": "rarefriends",
+    "url": "https://github.com/rarefriends",
+    "updated": false,
+    "text": "公开仓库与 PR 暂无新更新。仅公开仓库。"
+  },
+  "x_digest": {
+    "caption": "由 beam 的 X 连接器读取个人关注时间线，轻度分页 2 页共 197 条。实际抽样窗口为 2026-11-12 07:18:35 至 08:33:18（北京时间），约 75 分钟，仍有下一页。这不是关注时间线全量。未覆盖自上次正式摘要结束（11-11 08:42:17）至 11-12 07:18:35 的时段，也未覆盖 11-11 07:20 之前。部分帖文在接口返回中被截断，只依据已返回文字。",
+    "window": "07:18:35–08:33:18（北京时间），约 75 分钟，2 页 197 条",
+    "mainline": "这段约 75 分钟抽样里，时间线大量讨论关于英伟达 CEO 黄仁勋的传闻，以及有人转述的盘后波动；本报未核实这些说法，也不把账号里的「JUST IN」当成已确认新闻。行业消息侧，吴说和链研社都写到 MSCI 将把 Strategy 等公司从指数剔除，吴说还提到以色列 Discount Bank 计划在手机银行提供比特币和以太坊买卖，以及 SEC 支持 CFTC 批准个股永续期货的法庭意见，后几条均有截断。产品与安全侧，有人转述 Anthropic 路演称已在 AMD GPU 上运行 Claude，gakonst 讨论代理身份认证，余弦提醒 Telegram 新版消息内应用缺少沙盒。窗口只覆盖今早 07:18 至 08:33，不能代表昨日其余时段或全天。",
+    "accounts": [
+      {
+        "name": "吴说区块链",
+        "handle": "wublockchain12",
+        "items": [
+          {
+            "title": "以色列银行计划在手机银行买卖比特币和以太坊",
+            "detail": "吴说获悉：以色列 Discount Bank 宣布，将于 11 月 26 日起允许客户直接通过手机银行买卖比特币和以太坊，无需开设外部交易所账户或自行管理加密钱包，有望成为以色列首家提供此类服务的银行。",
+            "url": "https://x.com/wublockchain12/status/2120674097357283573"
+          },
+          {
+            "title": "MSCI 将剔除 Strategy 等公司",
+            "detail": "吴说引路透社：MSCI 将根据新的非经营性公司筛选方法，从旗下全球指数中剔除 Strategy（MSTR）、日本比特币财库公司 Metaplanet 及英国铀投资公司 Yellow Cake，调整将于 12 月 1 日生效。MSCI 认为这些公司的特征更接近投资基金，而非经营性企业。已返回文字还提到 Strategy 此前警告，被剔除可能导致约 28，后文被截断。",
+            "url": "https://x.com/wublockchain12/status/2120658772159082875",
+            "truncated": true
+          },
+          {
+            "title": "SEC 支持 CFTC 批准个股永续期货",
+            "detail": "吴说称，美国证券交易委员会向法院提交法庭之友意见书，支持商品期货交易委员会批准美国个股永续期货交易的决定。此前，包括 Cboe 和 Citadel Securities 在内的行业协会 Capital Markets Alliance 提起诉讼，认为此类产品应由 SEC 监管，后文在「CFTC」处被截断。",
+            "url": "https://x.com/wublockchain12/status/2120657698618593640",
+            "truncated": true
+          },
+          {
+            "title": "Ledger CEO 采访",
+            "detail": "吴说写，2026 年 11 月 11 日，Ledger CEO Pascal Gauthier 接受 Bloomberg Television 采访，被问及如何让用户相信设备安全性。他表示世上没有绝对的安全，后文在「Ledger」处被截断；标题部分写的是「每个人迟早都会遭到黑客攻击」。",
+            "url": "https://x.com/wublockchain12/status/2120667899002286093",
+            "truncated": true
+          },
+          {
+            "title": "RUM Group 第三季度财报",
+            "detail": "RUM Group 公布 2026 年第三季度财报，营收 $96.60M，同比增长 290%，环比增长 139%；调整后 EBITDA 首次转正，达 $4.41M，净亏损同比扩大至 $89.85M。收购 Northern Data 后的首个完整季度，AI 基础设施业务 Quake AI 贡献营收 $68.20M，占总营收逾 70%，约 2.2，后文被截断。",
+            "url": "https://x.com/wublockchain12/status/2120665805285363920",
+            "truncated": true
+          }
+        ],
+        "note": "以上均为吴说转述（含路透社口径与财报摘引），后三条均被截断，适合当索引，不是已核实档案或本报独立核算。"
+      },
+      {
+        "name": "链研社",
+        "handle": "lianyanshe",
+        "items": [
+          {
+            "title": "MSCI 终审名单与生效时点",
+            "detail": "他们写道，MSCI 把 Strategy 踢出了指数，市场几乎没反应，因为 Strategy 自己两周前就写在季报里了。按他们的说法，美东 11 月 11 日盘后 MSCI 公布终审名单；Strategy 被移出 MSCI USA，连带移出 MSCI World 和 ACWI；11 月 30 日收盘生效，被动基金要在那之前卖完。已返回文字写到「同批剔除 5 家，和 10」，后文被截断。",
+            "url": "https://x.com/lianyanshe/status/2120675767805682153",
+            "truncated": true
+          },
+          {
+            "title": "Hyperliquid 上 VBVIT 回补部分比特币空单",
+            "detail": "他们写道，Hyperliquid 上的匿名交易员 VBVIT 昨晚 23:46 起分批回补 BTC 空仓，凌晨 4 点到 6 点最集中，今早 8 点还在零星平；BTC 空仓从 1,245 枚降到 999 枚，方向仍是空仓。已返回文字写「可查成交里回补了 232.6 枚，平仓均价」，后文被截断。",
+            "url": "https://x.com/lianyanshe/status/2120674875883090390",
+            "truncated": true
+          }
+        ],
+        "note": "这是他们对公开指数决定和链上可见仓位变化的转述，且均被截断；不是对市场影响的判断，也不是本报独立对账。"
+      },
+      {
+        "name": "Orange AI",
+        "handle": "oran_ge",
+        "items": [
+          {
+            "title": "Anthropic 路演：已在 AMD GPU 上运行 Claude",
+            "detail": "他引用 Anthropic Road Show 视频的转写：今年他们首次开始使用 AMD 的 GPU；过去接入新芯片平台需要数十名工程师花费数月，这一次他们用 Mythos 三天写出了在 AMD 上运行 Claude 的内核。这是他对路演内容的转述，引用帖本身也被截断。",
+            "url": "https://x.com/oran_ge/status/2120669369013555248",
+            "truncated": true
+          },
+          {
+            "title": "美国科技岗位增长几乎不在软件岗",
+            "detail": "他引用一则就业观察称，科技公司有超过 281,000 个空缺职位，比一年前增长 17%；但产品经理、工程和设计职位仅增长 2%。他的评论是：软件行业基本已经停滞，AI 数据中心相关的实体岗位大幅增加。引用原文后半被截断。",
+            "url": "https://x.com/oran_ge/status/2120662791829008806",
+            "truncated": true
+          },
+          {
+            "title": "转述英伟达相关传闻",
+            "detail": "他还引用一则行情帖，称「华尔街日报称，英伟达准备罢免 CEO 黄仁勋」，并写英伟达盘后跌幅扩大至 8%。这是对他人帖文的转述，本报未核对原报道或盘后数据。",
+            "url": "https://x.com/oran_ge/status/2120661560129655116",
+            "unverified": true
+          }
+        ],
+        "note": "前两条是对路演转写和就业统计帖的再转述，后一条是未核实传闻；都不构成本报对人事或股价的确认。"
+      },
+      {
+        "name": "sleepy",
+        "handle": "sleepy0x13",
+        "items": [
+          {
+            "title": "a16z 的 B2A 经济提法",
+            "detail": "他转述 a16z 的 Olivia Moore 和 Justine Moore 所写《B2A 经济》：意思是以后做生意还得考虑 Business to Agent。他引 HUMAN Security 的监测称，今年 8 月到 10 月，AI 智能体的浏览流量暴涨 8 倍；已返回文字写到「截至 9」，后文被截断。",
+            "url": "https://x.com/sleepy0x13/status/2120670236240412773",
+            "truncated": true
+          },
+          {
+            "title": "把 AI 前景说得过近的激励",
+            "detail": "他写道，越来越觉得 AI 圈有点像一个大型末日预言互助会；倒不是说技术进步是假的，而是这个行业几乎所有人都有动力把未来说得离现实更近一点。已返回文字写到创业公司要让投资人觉得再不上车就晚了，以及「VC 得让 LP」，后文被截断。",
+            "url": "https://x.com/sleepy0x13/status/2120664080881156127",
+            "truncated": true
+          }
+        ],
+        "note": "这是对一篇机构文章和行业氛围的转述与评论，前一条数据未在本报核对原始监测，且被截断。"
+      },
+      {
+        "name": "Georgios Konstantopoulos",
+        "handle": "gakonst",
+        "items": [
+          {
+            "title": "代理访问服务时的身份证明",
+            "detail": "他写道，带钱包的代理可以访问任何服务，但服务不会愿意被任意代理访问；有时代理需要证明背后是谁。他引用并赞同一篇关于 MPP（机器支付）扩展身份原语的说明，认为代理与 API 的身份流程看起来会很像传统授权。",
+            "url": "https://x.com/gakonst/status/2120657845003972745"
+          },
+          {
+            "title": "个人工具与 GitHub PR 界面",
+            "detail": "他写道，在用过 i3、yabai 和 AeroSpace 之后，终于找到适合自己的窗口管理器，并给出他自己的 tatami 仓库（用 Zig 写的 macOS 平铺窗口管理器）。另一条说，个人工具上的不满现在几乎都能一次性解决。他还写道，新的 GitHub PR 界面「绝对糟糕」。",
+            "links": [
+              { "label": "tatami", "url": "https://x.com/gakonst/status/2120675007563182449" },
+              { "label": "个人工具", "url": "https://x.com/gakonst/status/2120666138120208452" },
+              { "label": "GitHub PR", "url": "https://x.com/gakonst/status/2120672028378448169" }
+            ]
+          }
+        ],
+        "note": "这是他对产品方向和个人工具体验的即时评论，不是对 MPP 规范或 GitHub 改版的评测报告。"
+      },
+      {
+        "name": "Cos(余弦)",
+        "handle": "evilcos",
+        "items": [
+          {
+            "title": "提醒暂缓更新 Telegram",
+            "detail": "他引用他人的技术说明并评论：新版 Telegram 支持消息里带「应用」，但没有沙盒保护，使用的 QuickJS 有可能成为恶意代码触发执行。被引用的说明称，所谓沙盒是进程内的 QuickJS（C）解释器，没有 fork、isolatedProcess 或 seccomp，因此一旦出现 QuickJS 漏洞，就可能获得与 Telegram 客户端相同的权限。他建议先等等，暂不更新 Telegram。",
+            "url": "https://x.com/evilcos/status/2120665611466633246"
+          }
+        ],
+        "note": "这是安全从业者对他人技术分析的转述和建议，本报未独立复现该实现，也不是官方安全通告。"
+      },
+      {
+        "name": "ZKsync",
+        "handle": "zksync",
+        "items": [
+          {
+            "title": "用生产部署衡量 Prividium",
+            "detail": "官方账号引用 Alex Gluchowski 在 The Rollup 节目中的说法：现在用生产来衡量成功，试点不再算数；并称他谈到 Prividium 如何帮助机构加快数字资产路线图，以及客户部署才是唯一真正的成功指标。另有一条指向完整采访的链接。",
+            "links": [
+              { "label": "生产指标", "url": "https://x.com/zksync/status/2120675805290496011" },
+              { "label": "完整采访", "url": "https://x.com/zksync/status/2120675808033538410" }
+            ]
+          }
+        ],
+        "note": "这是项目官方对访谈观点的转述，不是对客户数量或部署结果的独立核实。"
+      },
+      {
+        "name": "Gajesh",
+        "handle": "gajesh",
+        "items": [
+          {
+            "title": "Standard Agents 公布",
+            "detail": "他转发并引用 Justin 的发布说明：Standard Agents 已走出隐身期，是一套面向代理的开放标准，外加 harness 运行时。按该说明，「标准代理」可以在本地或云端运行，被打包、发布、放进 U 盘或通过邮件发送；安装到兼容运行时后，行为应当一致。Gajesh 写道，Justin 是 Darkbloom 很早期的用户，并表示期待试用。",
+            "url": "https://x.com/gajesh/status/2120663652101730413"
+          }
+        ],
+        "note": "这是对一则产品发布说明的转发与个人评价，本报未另核官方站点或实现细节。"
+      }
+    ],
+    "tools": [
+      {
+        "title": "Nanocode",
+        "detail": "gakonst 转发：Nanocode 自称是面向 Frontier Embedded Agents 的 SDK，站点为 nanocode.xyz。",
+        "links": [
+          { "label": "nanocode.xyz", "url": "https://nanocode.xyz" },
+          { "label": "Nanocode 转发", "url": "https://x.com/gakonst/status/2120676274507259919" }
+        ]
+      },
+      {
+        "title": "tatami",
+        "detail": "gakonst 给出的个人项目：用 Zig 从零写的 macOS 平铺窗口管理器，仓库在 GitHub gakonst/tatami。",
+        "links": [{ "label": "gakonst/tatami", "url": "https://github.com/gakonst/tatami" }]
+      },
+      {
+        "title": "Standard Agents",
+        "detail": "见上文 Gajesh 转发的发布说明；本报未另核官方主页，只保留原帖。",
+        "links": [{ "label": "原帖", "url": "https://x.com/gajesh/status/2120663652101730413" }]
+      }
+    ]
+  },
+  "methods": {
+    "properties": [
+      { "label": "本次取数", "value": "2026-11-12 08:33:11–08:34:02（北京时间）；X 两页在随后读取" },
+      {
+        "label": "新请求 / 复用",
+        "value": "公开 HTTP 新请求 13 次均 200（FNG、Reddit 新帖 RSS、GitHub 组织与两库 PR、DefiLlama 两次、TehcScreener status 及 trench/launchpads/bots/chains/rwa）；Defined filterPairs 1 次，4.368 CU；X 连接器 2 页。TehcScreener 因 status.synced_at 已变化而全部重抓，未复用昨早业务负载。未请求评论 RSS。"
+      },
+      { "label": "缓存目录", "value": "run-20261112-083226；Defined 为 defined-codex/20261112-083402；token 图为 defined-codex/token-images/20261112-083402" }
+    ],
+    "checklist": [
+      { "text": "r/Monad 新帖 RSS", "status": "ok", "meta": "成功；新请求 1 次，200；状态截至 08:33（北京时间）" },
+      { "text": "r/Monad 评论 RSS", "status": "skipped", "meta": "本次未请求，避免为补评论数增加抓取；评论数记为 --" },
+      { "text": "rarefriends 仓库与 PR", "status": "ok", "meta": "成功；新请求 3 次，均 200；本窗口无推送、新仓库或 PR 变动" },
+      { "text": "GMGN / FOMO dailyRevenue", "status": "ok", "meta": "新请求 2 次，200；最新完整日 UTC 2026-11-10；FOMO 的 11-09 已被数据源修订" },
+      { "text": "TehcScreener", "status": "ok", "meta": "status 已变化，业务接口全部重抓；主要数据日 2026-11-10，Elysium 链为 11-11" },
+      { "text": "恐惧贪婪指数", "status": "ok", "meta": "新请求 1 次，200；数据日 UTC 2026-11-12" },
+      { "text": "Defined / Codex 新池", "status": "ok", "meta": "新请求 1 次 filterPairs，4.368 CU；官方 apiUsage 显示 remaining 9992，但管道异步，不一定包含刚结束的这次请求" },
+      { "text": "关注账号 X 摘要", "status": "partial", "meta": "部分覆盖：2 页 197 条，抽样 07:18:35–08:33:18（北京时间），非全量；11-11 08:42 至 11-12 07:18 未读" }
+    ],
+    "sources": [
+      { "title": "Reddit", "detail": "只用官方新帖 Atom RSS，按条目更新时间筛选。无完整官方评论总数，表中评论数写 --。无新帖只指新帖 RSS，不等于无讨论。" },
+      { "title": "GitHub", "detail": "未登录公开 REST：先拉组织仓库再按库拉 PR，未使用 search，未克隆仓库。仅可见公开仓库。" },
+      { "title": "DefiLlama", "detail": "新请求 summary/fees/gmgn 与 summary/fees/fomo（dataType=dailyRevenue）。UTC 11-11 尚未出现，故使用已公布的 11-10。FOMO 的 11-09 已从昨早的 $85.17K 修订为 $288.99K。不是实时行情。" },
+      { "title": "TehcScreener", "detail": "仅官方 /api/v1。因 synced_at 变化，重抓 status、trench、launchpads、bots、chains；RWA 按既有日频授权一并缓存，页面不展示。未调未文档化接口。" },
+      { "title": "Alternative.me", "detail": "官方 https://api.alternative.me/fng/?limit=2。数据日 UTC 2026-11-12，上一日为 11-11。" },
+      { "title": "Defined / Codex", "detail": "官方 GraphQL filterPairs 一次，4.368 CU，同请求附带 TokenInfo 图片轻字段。apiUsage 显示 used 8、limit 10000、remaining 9992，更新管道异步，不一定包含本次 4.368 CU。叙事标题链接为已核验路径 /token/sol/{address}。" },
+      { "title": "X", "detail": "仅通过官方 X API。个人关注时间线用 beam 的 user-X 连接器，start_time 为 11-11 00:00（北京时间）。实际只读到最新约 75 分钟。未用浏览器绕过，未读 DM，未把外部账号写入监控清单。去重基准为上次正式早报的帖子 ID。" }
+    ],
+    "links": [
+      { "title": "r/Monad", "site": "Reddit", "url": "https://www.reddit.com/r/Monad/" },
+      { "title": "rarefriends", "site": "GitHub", "url": "https://github.com/rarefriends" },
+      { "title": "GMGN", "site": "DefiLlama", "url": "https://defillama.com/protocol/gmgn" },
+      { "title": "FOMO", "site": "DefiLlama", "url": "https://defillama.com/protocol/fomo" },
+      { "title": "TehcScreener", "site": "tehcscreener.com", "url": "https://tehcscreener.com/" },
+      { "title": "TehcScreener API 文档", "site": "tehcscreener.com", "url": "https://tehcscreener.com/api" },
+      { "title": "Fear & Greed Index", "site": "Alternative.me", "url": "https://alternative.me/crypto/fear-and-greed-index/" },
+      { "title": "Defined Tokens", "site": "defined.fi", "url": "https://www.defined.fi/tokens" }
+    ]
+  }
+}
