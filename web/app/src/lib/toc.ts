@@ -1,0 +1,39 @@
+/**
+ * 全文页左侧目录的纯逻辑（不依赖 DOM，便于单测）。
+ */
+
+export type TocChapter = { id: string; sections: { id: string }[] };
+
+/** 目录项（章、节）按页面顺序展开成锚点 id 列表；小节 id 带章前缀，见 route.anchorId */
+export function anchorsOf(chapters: TocChapter[], anchorId: (c: string, s?: string) => string): string[] {
+  return chapters.flatMap((c) => [anchorId(c.id), ...c.sections.map((s) => anchorId(c.id, s.id))]);
+}
+
+/**
+ * 当前阅读位置：标题顶端已经越过阅读线（距视口顶 line px）的最后一项。
+ * 一项都没越过时返回 null（还在期首导语处）。到达页底时返回最后一项，
+ * 保证最后几节很短、滚不到阅读线时也能被高亮。
+ */
+export function activeAnchor(tops: { id: string; top: number }[], line: number, atBottom = false): string | null {
+  if (!tops.length) return null;
+  if (atBottom) return tops[tops.length - 1].id;
+  let hit: string | null = null;
+  for (const t of tops) {
+    if (t.top <= line) hit = t.id;
+    else break;
+  }
+  return hit;
+}
+
+/** 深链接要滚到的位置：节存在用节，否则章存在用章，否则 null（回到顶部） */
+export function resolveTarget(
+  chapters: TocChapter[],
+  chapter: string | null,
+  section: string | null,
+  anchorId: (c: string, s?: string) => string,
+): string | null {
+  const c = chapter ? chapters.find((x) => x.id === chapter) : undefined;
+  if (!c) return null;
+  if (section && c.sections.some((s) => s.id === section)) return anchorId(c.id, section);
+  return anchorId(c.id);
+}

@@ -4,12 +4,12 @@ import { arrow, changePct, mmdd, moved, num, pct, usd, zhDay, zhWeekday } from "
 import { Ext, Rich } from "@/lib/rich";
 import { Columns, Note, Pill, Table, Term } from "@/components/ui";
 
-/** 一章 = 目录里的一行 + 一个详情页；一节 = 详情页里的一个二级标题，也是左侧目录的一项 */
+/** 一章 = 全文页里的一个二级标题；一节 = 章下的三级标题。章、节都是左侧整期目录的一项 */
 export type Section = { id: string; title: string; body: ReactNode };
 export type Chapter = {
   id: string;
   title: string;
-  /** 目录行下面的一句话，全部由当期数据算出 */
+  /** 一句话概括，全部由当期数据算出（全文页不显示，保留给日后列表 / 摘要用） */
   desc: string;
   pill?: string;
   lead?: ReactNode;
@@ -65,11 +65,7 @@ function overview(r: Report): Chapter {
     title: "今日要点",
     desc: `导语与 ${r.highlights.length} 条要点${r.notices?.length ? `，含 ${r.notices.length} 条提示` : ""}`,
     pill: r.notices?.[0]?.title,
-    lead: (
-      <p>
-        <Rich text={r.summary} />
-      </p>
-    ),
+    // 导语（r.summary）由全文页期首显示，这里不再重复
     sections,
   };
 }

@@ -1,7 +1,8 @@
 /*
  * 关注清单日报 · 版式
  * 对标参考站的作品库页面：白底 + stone 灰阶、大号衬线标题配无衬线正文、
- * 456px 居中目录列（细分隔线行）、576px 正文列 + 左侧固定小节目录、底部扇形书卡。
+ * 往期页为 456px 居中列表 + 底部扇形书卡；一期全文页为 640px 正文列 + 左侧固定整期目录
+ * （窄屏收进「目录」抽屉）。
  */
 
 :root {
@@ -303,89 +304,148 @@ a {
   opacity: 0.55;
 }
 
-/* ---------- 章节详情（文章页） ---------- */
+/* ---------- 一期全文页：左侧固定整期目录 + 居中正文 ---------- */
 
-.page-chapter {
-  position: relative;
+.topbar-tools {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.toc-toggle {
+  display: none;
+  height: 32px;
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--bg);
+  color: var(--body);
+  font: inherit;
+  font-size: 14px;
+  line-height: 20px;
+  cursor: pointer;
+  transition: color 0.15s ease-out, background-color 0.15s ease-out;
+}
+
+.toc-toggle:hover {
+  color: var(--strong);
+  background: var(--hover);
+}
+
+.toc-backdrop {
+  display: none;
 }
 
 .toc {
   position: fixed;
-  top: 70px;
-  left: 64px;
-  width: 192px;
+  top: 88px;
+  bottom: 24px;
+  left: 24px;
+  width: 232px;
+  display: flex;
+  flex-direction: column;
+  z-index: 25;
 }
 
-.back {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 14px;
-  line-height: 20px;
-  color: var(--faint);
-  text-decoration: none;
-  transition: color 0.15s ease-out;
-}
-
-.back:hover {
+.toc-issue {
+  flex-shrink: 0;
+  padding: 0 0 12px 12px;
+  font-family: var(--serif);
+  font-size: 18px;
+  line-height: 24px;
   color: var(--strong);
-}
-
-.back-inline {
-  display: none;
+  text-decoration: none;
 }
 
 .toc nav {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-top: 40px;
-  max-height: calc(100vh - 200px);
+  flex: 1;
+  min-height: 0;
   overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-bottom: 16px;
+  scrollbar-width: thin;
+}
+
+.toc ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.toc-chapters > li + li {
+  margin-top: 12px;
 }
 
 .toc nav a {
-  font-size: 14px;
+  display: block;
+  padding: 2px 8px 2px 12px;
+  border-left: 2px solid transparent;
+  font-size: 13px;
   line-height: 20px;
   color: var(--faint);
   text-decoration: none;
-  transition: color 0.15s ease-out;
+  transition: color 0.15s ease-out, border-color 0.15s ease-out;
+}
+
+.toc nav a.toc-chapter {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--muted);
+}
+
+.toc-sections a {
+  padding-left: 24px !important;
 }
 
 .toc nav a:hover,
-.toc nav a[aria-current] {
+.toc .is-active > a.toc-chapter {
   color: var(--strong);
 }
 
-.chapter {
-  width: min(576px, 100% - 48px);
+.toc nav a[aria-current] {
+  color: var(--strong);
+  border-left-color: var(--accent);
+}
+
+.issue {
+  width: min(640px, 100% - 48px);
   margin: 0 auto;
-  padding: 64px 0 96px;
+  padding: 120px 0 96px;
 }
 
-.chapter-head {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 16px;
-  margin-bottom: 40px;
+.issue-head {
+  margin-bottom: 24px;
 }
 
-.chapter-head h1 {
+.issue-date {
+  margin-bottom: 8px;
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--muted);
+}
+
+.issue-head .lead a {
+  text-decoration: underline;
+  text-decoration-color: var(--faint);
+  text-underline-offset: 3px;
+}
+
+.issue-chapter {
+  margin-top: 72px;
+}
+
+.chapter-title {
   font-family: var(--serif);
   font-weight: 400;
   font-size: 36px;
   line-height: 40px;
   letter-spacing: -0.025em;
   color: var(--strong);
-  margin-bottom: 8px;
+  margin-bottom: 32px;
+  padding-top: 24px;
+  border-top: 1px solid var(--strong);
   text-wrap: balance;
-}
-
-.chapter-tools {
-  display: flex;
-  gap: 4px;
-  margin-top: 6px;
+  scroll-margin-top: 24px;
 }
 
 .prose {
@@ -401,10 +461,9 @@ a {
   display: flex;
   flex-direction: column;
   gap: 24px;
-  scroll-margin-top: 32px;
 }
 
-.prose h2 {
+.prose h3 {
   margin-top: 48px;
   padding-bottom: 8px;
   border-bottom: 1px solid var(--line);
@@ -416,7 +475,7 @@ a {
   scroll-margin-top: 32px;
 }
 
-.prose > section:first-child > h2 {
+.prose > section:first-child > h3 {
   margin-top: 0;
 }
 
@@ -795,14 +854,49 @@ td:first-child {
 
 /* ---------- 窄屏 ---------- */
 
-@media (max-width: 1100px) {
-  .toc {
-    display: none;
+@media (max-width: 1240px) {
+  .page-issue .topbar {
+    padding: 12px 16px;
+    background: var(--bg);
+    border-bottom: 1px solid var(--line);
+    pointer-events: auto;
   }
 
-  .back-inline {
-    display: inline-flex;
-    margin-bottom: 32px;
+  .page-issue .chapter-title,
+  .page-issue .prose h3 {
+    scroll-margin-top: 80px;
+  }
+
+  .toc-toggle {
+    display: inline-block;
+  }
+
+  .toc {
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: min(320px, 100% - 48px);
+    padding: 72px 16px 0 12px;
+    background: var(--bg);
+    border-right: 1px solid var(--line);
+    box-shadow: 0 0 48px rgb(0 0 0 / 0.12);
+    visibility: hidden;
+    transform: translateX(-100%);
+    transition: transform 0.2s ease-out, visibility 0s linear 0.2s;
+  }
+
+  .toc-open .toc {
+    visibility: visible;
+    transform: none;
+    transition: transform 0.2s ease-out;
+  }
+
+  .toc-open .toc-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 24;
+    background: rgb(0 0 0 / 0.2);
   }
 }
 
@@ -826,11 +920,11 @@ td:first-child {
     line-height: 22px;
   }
 
-  .chapter {
-    padding-top: 32px;
+  .issue {
+    padding-top: 88px;
   }
 
-  .chapter-head h1 {
+  .chapter-title {
     font-size: 30px;
     line-height: 36px;
   }
