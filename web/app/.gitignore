@@ -1,0 +1,7 @@
+node_modules/
+dist/
+*.tsbuildinfo
+# affectUI Pro 密钥只放在环境变量或这些本地文件里，绝不入库
+.env
+.env.*
+*.local
