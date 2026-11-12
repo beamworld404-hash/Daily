@@ -3,7 +3,7 @@ import type React from "react";
 import type { Report } from "@/lib/types";
 import { reports } from "@/lib/reports";
 import { anchorId, href } from "@/lib/route";
-import { activeAnchor, anchorsOf, resolveTarget } from "@/lib/toc";
+import { activeAnchor, homeEntries, resolveTarget, tocItems } from "@/lib/toc";
 import { zhDay, zhWeekday } from "@/lib/format";
 import { Rich } from "@/lib/rich";
 import { chaptersOf, issueTitle } from "@/components/chapters";
@@ -48,10 +48,12 @@ const reducedMotion = () => matchMedia("(prefers-reduced-motion: reduce)").match
  */
 export function IssuePage({ report, chapterId, sectionId }: { report: Report; chapterId: string | null; sectionId: string | null }) {
   const chapters = useMemo(() => chaptersOf(report), [report]);
-  const anchors = useMemo(() => anchorsOf(chapters, anchorId), [chapters]);
+  const items = useMemo(() => tocItems(chapters, anchorId), [chapters]);
+  const anchors = useMemo(() => items.map((t) => t.id), [items]);
   const [active, setActive] = useState<string | null>(null);
   const [tocOpen, setTocOpen] = useState(false);
   const firstScroll = useRef(true);
+  const tocRef = useRef<HTMLElement>(null);
   const tocNavRef = useRef<HTMLElement>(null);
   const toggleRef = useRef<HTMLButtonElement>(null);
 
@@ -95,8 +97,6 @@ export function IssuePage({ report, chapterId, sectionId }: { report: Report; ch
     };
   }, [anchors]);
 
-  const activeChapter = active ? active.split("--")[0] : null;
-
   // 目录本身较长：让高亮项保持在目录可视范围内（只滚目录，不动页面）
   useEffect(() => {
     const nav = tocNavRef.current;
@@ -112,7 +112,7 @@ export function IssuePage({ report, chapterId, sectionId }: { report: Report; ch
   // 窄屏目录抽屉：Esc 关闭并把焦点还给按钮
   useEffect(() => {
     if (!tocOpen) return;
-    tocNavRef.current?.querySelector<HTMLElement>("a")?.focus();
+    tocRef.current?.querySelector<HTMLElement>("a")?.focus();
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         setTocOpen(false);
@@ -135,7 +135,6 @@ export function IssuePage({ report, chapterId, sectionId }: { report: Report; ch
   const idx = reports.findIndex((r) => r.date === report.date);
   const newer = idx > 0 ? reports[idx - 1] : undefined;
   const older = idx >= 0 ? reports[idx + 1] : undefined;
-  const issueHref = href.issue(report.date);
 
   return (
     <div className={`page page-issue${tocOpen ? " toc-open" : ""}`}>
@@ -157,40 +156,26 @@ export function IssuePage({ report, chapterId, sectionId }: { report: Report; ch
       </header>
 
       <div className="toc-backdrop" aria-hidden="true" onClick={() => setTocOpen(false)} />
-      <aside className="toc" id="issue-toc">
-        <a className="toc-issue" href={issueHref} onClick={(e) => onTocClick(e, null)}>
-          {shortTitle(report)}
+      <aside className="toc" id="issue-toc" ref={tocRef} aria-label="本期目录">
+        <a className="toc-back" href={href.home()} onClick={() => setTocOpen(false)}>
+          <span className="toc-back-arrow" aria-hidden="true">
+            ←
+          </span>
+          全部日报
         </a>
-        <nav aria-label="本期目录" ref={tocNavRef}>
-          <ol className="toc-chapters">
-            {chapters.map((c) => (
-              <li key={c.id} className={activeChapter === c.id ? "is-active" : undefined}>
+        <nav aria-label={`${shortTitle(report)}目录`} ref={tocNavRef}>
+          <ol className="toc-list">
+            {items.map((t) => (
+              <li key={t.id}>
                 <a
-                  className="toc-chapter"
-                  href={href.chapter(report.date, c.id)}
-                  data-anchor={anchorId(c.id)}
-                  aria-current={active === anchorId(c.id) ? "location" : undefined}
-                  onClick={(e) => onTocClick(e, anchorId(c.id))}
+                  className={t.level === 1 ? "toc-chapter" : "toc-section"}
+                  href={href.chapter(report.date, t.chapter, t.section ?? undefined)}
+                  data-anchor={t.id}
+                  aria-current={active === t.id ? "location" : undefined}
+                  onClick={(e) => onTocClick(e, t.id)}
                 >
-                  {c.title}
+                  {t.title}
                 </a>
-                <ol className="toc-sections">
-                  {c.sections.map((s) => {
-                    const id = anchorId(c.id, s.id);
-                    return (
-                      <li key={s.id}>
-                        <a
-                          href={href.chapter(report.date, c.id, s.id)}
-                          data-anchor={id}
-                          aria-current={active === id ? "location" : undefined}
-                          onClick={(e) => onTocClick(e, id)}
-                        >
-                          {s.title}
-                        </a>
-                      </li>
-                    );
-                  })}
-                </ol>
               </li>
             ))}
           </ol>
@@ -198,6 +183,12 @@ export function IssuePage({ report, chapterId, sectionId }: { report: Report; ch
       </aside>
 
       <main className="issue" id="main">
+        <a className="issue-back" href={href.home()}>
+          <span className="toc-back-arrow" aria-hidden="true">
+            ←
+          </span>
+          全部日报
+        </a>
         <header className="issue-head">
           <p className="issue-date">
             {zhDay(report.date)} · {zhWeekday(report.date)}
@@ -244,8 +235,8 @@ export function IssuePage({ report, chapterId, sectionId }: { report: Report; ch
               </span>
             </a>
           ) : (
-            <a className="pager-next" href={href.archive()}>
-              <span>往期</span>
+            <a className="pager-next" href={href.home()}>
+              <span>全部日报</span>
               <span className="arrow" aria-hidden="true">
                 →
               </span>
@@ -257,20 +248,35 @@ export function IssuePage({ report, chapterId, sectionId }: { report: Report; ch
   );
 }
 
-export function ArchivePage() {
+/**
+ * 主页：按日期倒序列出已有的每一期，点日期进入那一期的全文页。
+ * 只列 web/content/reports/ 里真实存在的期次。
+ */
+export function HomePage() {
+  const entries = homeEntries(reports);
+  // 从全文页中段点「← 全部日报」回来时，主页从顶部开始
+  useLayoutEffect(() => window.scrollTo(0, 0), []);
   return (
     <div className="page page-index">
       <TopBar />
       <main className="index" id="main">
-        <h1 className="display">往期</h1>
-        <p className="lead">共 {reports.length} 期，按日期倒序。每期的数据在出报时取得，之后不再改动。</p>
-        <ul className="rows" aria-label="往期日报">
-          {reports.map((r, i) => (
-            <Row key={r.date} to={href.issue(r.date)} title={issueTitle(r)} desc={r.summary} pill={i === 0 ? "最新" : undefined} />
+        <h1 className="display">关注清单日报</h1>
+        <p className="lead">
+          {entries.length ? `共 ${entries.length} 期，按日期倒序。点日期打开当期全文；每期的数据在出报时取得，之后不再改动。` : "还没有日报。"}
+        </p>
+        <ul className="rows" aria-label="各期日报">
+          {entries.map((r) => (
+            <Row
+              key={r.date}
+              to={href.issue(r.date)}
+              title={`${zhDay(r.date)} · ${zhWeekday(r.date)}`}
+              desc={`${r.edition} · ${r.summary}`}
+              pill={r.latest ? "最新" : undefined}
+            />
           ))}
         </ul>
       </main>
-      <BookCards current="archive" />
+      <BookCards />
     </div>
   );
 }
@@ -286,14 +292,16 @@ const CARD_COLORS: [string, string][] = [
 ];
 
 /**
- * 页面底部扇形排开的书卡：最近几期 + 往期。固定在视口底部只露出上沿，
+ * 主页底部扇形排开的书卡：最近几期。固定在视口底部只露出上沿，
  * 悬停或键盘聚焦时抬起。数量少时同样居中对称。
  */
-function BookCards({ current }: { current: string }) {
-  const cards = [
-    ...reports.slice(0, 5).map((r) => ({ key: r.date, to: href.issue(r.date), label: `${Number(r.date.slice(5, 7))} 月 ${Number(r.date.slice(8, 10))} 日\n${r.edition}`, name: issueTitle(r) })),
-    { key: "archive", to: href.archive(), label: "往期\n归档", name: "往期" },
-  ];
+function BookCards() {
+  const cards = reports.slice(0, 5).map((r) => ({
+    key: r.date,
+    to: href.issue(r.date),
+    label: `${Number(r.date.slice(5, 7))} 月 ${Number(r.date.slice(8, 10))} 日\n${r.edition}`,
+    name: issueTitle(r),
+  }));
   const mid = (cards.length - 1) / 2;
   return (
     <nav className="books" aria-label="往期书架">
@@ -307,7 +315,6 @@ function BookCards({ current }: { current: string }) {
             className="book"
             href={c.to}
             aria-label={c.name}
-            aria-current={c.key === current ? "page" : undefined}
             style={{
               ["--x" as string]: `${k * 64}px`,
               ["--r" as string]: `${k * 4}deg`,
@@ -336,8 +343,7 @@ export function NotFound({ what, back = "#/" }: { what: string; back?: string })
         <h1 className="display">找不到这一页</h1>
         <p className="lead">{what}</p>
         <ul className="rows">
-          <Row to={back} title="返回" desc="回到上一级目录" />
-          <Row to={href.archive()} title="往期" desc="查看全部日报" />
+          <Row to={back} title="全部日报" desc="回到主页，按日期选一期" />
         </ul>
       </main>
     </div>

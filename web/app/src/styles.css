@@ -1,8 +1,8 @@
 /*
  * 关注清单日报 · 版式
  * 对标参考站的作品库页面：白底 + stone 灰阶、大号衬线标题配无衬线正文、
- * 往期页为 456px 居中列表 + 底部扇形书卡；一期全文页为 640px 正文列 + 左侧固定整期目录
- * （窄屏收进「目录」抽屉）。
+ * 主页为 456px 居中日期列表 + 底部扇形书卡；一期全文页为 576px 正文列（与参考站文章页
+ * max-w-xl = 36rem 一致）+ 左侧固定「← 全部日报」与整期目录（窄屏收进「目录」抽屉）。
  */
 
 :root {
@@ -224,6 +224,11 @@ a {
   line-height: 20px;
   color: var(--muted);
   overflow-wrap: anywhere;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
 }
 
 .pill {
@@ -282,9 +287,6 @@ a {
   transform: translateX(var(--x)) rotate(var(--r)) translateY(-28px);
 }
 
-.book[aria-current="page"] {
-  transform: translateX(var(--x)) rotate(var(--r)) translateY(-12px);
-}
 
 .book-title {
   display: block;
@@ -336,25 +338,48 @@ a {
   display: none;
 }
 
+/* 参考站文章页侧栏：距左上 64px、192px 宽；返回链接在上，下面是安静的浅灰标题列表 */
 .toc {
   position: fixed;
-  top: 88px;
+  top: 64px;
   bottom: 24px;
-  left: 24px;
-  width: 232px;
+  left: 64px;
+  width: 192px;
+  padding-top: 4px;
   display: flex;
   flex-direction: column;
   z-index: 25;
 }
 
-.toc-issue {
+.toc-back,
+.issue-back {
   flex-shrink: 0;
-  padding: 0 0 12px 12px;
-  font-family: var(--serif);
-  font-size: 18px;
-  line-height: 24px;
-  color: var(--strong);
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 40px;
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--faint);
   text-decoration: none;
+  transition: color 0.15s ease-out;
+}
+
+.toc-back-arrow {
+  font-size: 18px;
+  line-height: 1;
+}
+
+.toc-back:hover,
+.issue-back:hover {
+  color: var(--strong);
+}
+
+.issue-back {
+  display: none;
+  margin-bottom: 32px;
+  font-size: 15px;
 }
 
 .toc nav {
@@ -363,54 +388,54 @@ a {
   overflow-y: auto;
   overscroll-behavior: contain;
   padding-bottom: 16px;
-  scrollbar-width: thin;
+  scrollbar-width: none;
 }
 
-.toc ol {
+.toc nav::-webkit-scrollbar {
+  display: none;
+}
+
+.toc-list {
   list-style: none;
   margin: 0;
   padding: 0;
 }
 
-.toc-chapters > li + li {
-  margin-top: 12px;
+.toc-list > li + li {
+  margin-top: 8px;
 }
 
-.toc nav a {
+/* 章与章之间多留一点空，代替缩进层级 */
+.toc-list > li:has(> .toc-chapter):not(:first-child) {
+  margin-top: 20px;
+}
+
+.toc-list a {
   display: block;
-  padding: 2px 8px 2px 12px;
-  border-left: 2px solid transparent;
-  font-size: 13px;
+  font-size: 14px;
   line-height: 20px;
   color: var(--faint);
   text-decoration: none;
-  transition: color 0.15s ease-out, border-color 0.15s ease-out;
+  text-wrap: pretty;
+  transition: color 0.15s ease-out;
 }
 
-.toc nav a.toc-chapter {
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--muted);
+.toc-list a.toc-section {
+  padding-left: 12px;
 }
 
-.toc-sections a {
-  padding-left: 24px !important;
+.toc-list a[aria-current] {
+  color: var(--body);
 }
 
-.toc nav a:hover,
-.toc .is-active > a.toc-chapter {
+.toc-list a:hover {
   color: var(--strong);
-}
-
-.toc nav a[aria-current] {
-  color: var(--strong);
-  border-left-color: var(--accent);
 }
 
 .issue {
-  width: min(640px, 100% - 48px);
+  width: min(576px, 100% - 64px);
   margin: 0 auto;
-  padding: 120px 0 96px;
+  padding: 64px 0 96px;
 }
 
 .issue-head {
@@ -854,7 +879,15 @@ td:first-child {
 
 /* ---------- 窄屏 ---------- */
 
-@media (max-width: 1240px) {
+/* 宽屏：目录占左侧，左上角站点标记让位给「← 全部日报」 */
+@media (min-width: 1152px) {
+  .page-issue .topbar .mark {
+    visibility: hidden;
+  }
+}
+
+/* 576px 正文居中时，左侧 64 + 192 的目录需要视口 ≥ 1152px 才不与正文相碰 */
+@media (max-width: 1151px) {
   .page-issue .topbar {
     padding: 12px 16px;
     background: var(--bg);
@@ -871,12 +904,20 @@ td:first-child {
     display: inline-block;
   }
 
+  .issue {
+    padding-top: 96px;
+  }
+
+  .issue-back {
+    display: inline-flex;
+  }
+
   .toc {
     top: 0;
     bottom: 0;
     left: 0;
     width: min(320px, 100% - 48px);
-    padding: 72px 16px 0 12px;
+    padding: 80px 24px 0;
     background: var(--bg);
     border-right: 1px solid var(--line);
     box-shadow: 0 0 48px rgb(0 0 0 / 0.12);
@@ -939,9 +980,6 @@ td:first-child {
     transform: translateX(calc(var(--x) * 0.6)) rotate(var(--r)) scale(0.8) translateY(-24px);
   }
 
-  .book[aria-current="page"] {
-    transform: translateX(calc(var(--x) * 0.6)) rotate(var(--r)) scale(0.8) translateY(-10px);
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {
