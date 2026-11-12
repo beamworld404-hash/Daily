@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import type { CheckStatus, Report } from "@/lib/types";
+import type { CheckStatus, ListedToken, Report } from "@/lib/types";
 import { arrow, changePct, mmdd, moved, num, pct, usd, zhDay, zhWeekday } from "@/lib/format";
 import { Ext, Rich } from "@/lib/rich";
 import { Columns, Note, Pill, Table, Term } from "@/components/ui";
@@ -345,35 +345,36 @@ function trench(r: Report): Chapter | null {
   return { id: "trench", title: "Trench 与链上", desc: bits.join(" · "), sections };
 }
 
+/** 代币榜列表：Defined（旧期）与 DexScreener（新期）共用 */
+function tokenList(tokens: (ListedToken & { dex?: string; pair_created_at?: string })[]) {
+  return (
+    <ol className="entries">
+      {tokens.map((t, i) => (
+        <li key={t.url} className="entry">
+          <div className="entry-head">
+            <span className="entry-rank">{i + 1}</span>
+            <Ext href={t.url} className="entry-title">
+              {t.symbol}
+            </Ext>
+            {t.chain ? <span className="entry-chain">{t.chain}</span> : null}
+            {t.status ? <Pill tone={t.status === "新上" ? "accent" : "muted"}>{t.status}</Pill> : null}
+          </div>
+          <p className="entry-meta">
+            流动性 {usd(t.liquidity_usd)} · 24h 成交额 {usd(t.volume_24h_usd)}
+            {t.dex ? ` · ${t.dex}` : ""}
+            {t.pair_created_at ? ` · 交易对创建于 ${t.pair_created_at}` : ""}
+          </p>
+          <p className="entry-body">{t.narrative ? <Rich text={t.narrative} /> : "暂无可核实的项目资料。"}</p>
+        </li>
+      ))}
+    </ol>
+  );
+}
+
 function defined(r: Report): Chapter | null {
   const d = r.defined;
   if (!d) return null;
-  const sections: Section[] = [
-    {
-      id: "tokens",
-      title: "榜单",
-      body: (
-        <ol className="entries">
-          {d.tokens.map((t, i) => (
-            <li key={t.url} className="entry">
-              <div className="entry-head">
-                <span className="entry-rank">{i + 1}</span>
-                <Ext href={t.url} className="entry-title">
-                  {t.symbol}
-                </Ext>
-                {t.chain ? <span className="entry-chain">{t.chain}</span> : null}
-                {t.status ? <Pill tone={t.status === "新上" ? "accent" : "muted"}>{t.status}</Pill> : null}
-              </div>
-              <p className="entry-meta">
-                流动性 {usd(t.liquidity_usd)} · 24h 成交额 {usd(t.volume_24h_usd)}
-              </p>
-              <p className="entry-body">{t.narrative ? <Rich text={t.narrative} /> : "暂无可核实的项目资料。"}</p>
-            </li>
-          ))}
-        </ol>
-      ),
-    },
-  ];
+  const sections: Section[] = [{ id: "tokens", title: "榜单", body: tokenList(d.tokens) }];
   if (d.changes) sections.push({ id: "changes", title: "与上一榜对比", body: <p><Rich text={d.changes} /></p> });
   sections.push({
     id: "defined-method",
@@ -389,6 +390,32 @@ function defined(r: Report): Chapter | null {
   return {
     id: "defined",
     title: "Defined 新池",
+    desc: `前 ${d.tokens.length}：${d.tokens.map((t) => t.symbol).join("、")}`,
+    lead: <p>{d.title}</p>,
+    sections,
+  };
+}
+
+/** DexScreener 官方 API 榜（替代 Defined）。章标题按实际榜义，不叫「新池」 */
+function dexscreener(r: Report): Chapter | null {
+  const d = r.dexscreener;
+  if (!d) return null;
+  const sections: Section[] = [{ id: "tokens", title: "榜单", body: tokenList(d.tokens) }];
+  if (d.changes) sections.push({ id: "changes", title: "与上一榜对比", body: <p><Rich text={d.changes} /></p> });
+  sections.push({
+    id: "dexscreener-method",
+    title: "取榜方法",
+    body: (
+      <>
+        <p>{d.caption}</p>
+        <p>{d.method}</p>
+        <p className="meta">抓取时间 {d.fetched_at}</p>
+      </>
+    ),
+  });
+  return {
+    id: "dexscreener",
+    title: "DexScreener 最新资料代币",
     desc: `前 ${d.tokens.length}：${d.tokens.map((t) => t.symbol).join("、")}`,
     lead: <p>{d.title}</p>,
     sections,
@@ -607,7 +634,7 @@ function methods(r: Report): Chapter {
 
 /** 某一期的章节，按阅读顺序；缺省模块自动跳过 */
 export function chaptersOf(r: Report): Chapter[] {
-  return [overview(r), onchain(r), trench(r), defined(r), community(r), xDigest(r), methods(r)].filter(
+  return [overview(r), onchain(r), trench(r), defined(r), dexscreener(r), community(r), xDigest(r), methods(r)].filter(
     (c): c is Chapter => c !== null,
   );
 }

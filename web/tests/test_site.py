@@ -47,9 +47,77 @@ class ValidateTests(unittest.TestCase):
 
     def test_optional_modules_can_be_absent(self):
         d = sample()
-        for k in ("fng", "revenue", "tehc", "defined", "reddit", "github", "x_digest", "notices"):
+        for k in ("fng", "revenue", "tehc", "defined", "reddit", "github", "x_digest", "notices"):  # dexscreener 本就没有
             d.pop(k)
         self.assertEqual(validate_report(d, "2026-11-12"), [])
+
+
+def dexscreener_block() -> dict:
+    return {
+        "title": "DexScreener 最新代币资料 · 按 24h 成交额前 5",
+        "fetched_at": "2026-11-13 08:40:12（北京时间）",
+        "caption": "取自 DexScreener 官方 API：GET /token-profiles/latest/v1 …",
+        "changes": "数据源已由 Defined / Codex 更换为 DexScreener 官方接口，本期不做对比。",
+        "tokens": [
+            {
+                "symbol": "ABC",
+                "chain": "solana",
+                "url": "https://dexscreener.com/solana/fj1y3drk5z715mj8hk512ekk3rqhtahgrv6hmhnpcn2u",
+                "address": "4FP2GRQS3WYPsZSE2dwaVzqkajrBpHcXyVSTVt83pump",
+                "dex": "pumpswap",
+                "liquidity_usd": 44728.79,
+                "volume_24h_usd": 960185.55,
+                "pair_created_at": "2026-11-12 22:33",
+                "narrative": None,
+            }
+        ],
+        "method": "按 volume.h24 降序取前 5。",
+    }
+
+
+class DexScreenerTests(unittest.TestCase):
+    def test_dexscreener_block_is_valid_without_defined(self):
+        d = sample()
+        d.pop("defined")
+        d.pop("x_digest")
+        d["dexscreener"] = dexscreener_block()
+        self.assertEqual(validate_report(d, "2026-11-12"), [])
+
+    def test_old_issue_with_defined_still_valid(self):
+        d = sample()
+        self.assertIn("defined", d)
+        self.assertNotIn("dexscreener", d)
+        self.assertEqual(validate_report(d, "2026-11-12"), [])
+
+    def test_dexscreener_rejects_non_dexscreener_links(self):
+        for bad in (
+            "https://www.defined.fi/token/sol/4CxjZyMNoF1p6eXHXHv1TWpS2X47CuUmLwtGe18spump",
+            "http://dexscreener.com/solana/abc",
+            "https://dexscreener.com.evil.example/solana/abc",
+        ):
+            d = sample()
+            d["dexscreener"] = dexscreener_block()
+            d["dexscreener"]["tokens"][0]["url"] = bad
+            errs = "\n".join(validate_report(d, "2026-11-12"))
+            self.assertIn("dexscreener.tokens[0].url", errs, bad)
+
+    def test_dexscreener_requires_caption_method_and_numbers(self):
+        d = sample()
+        blk = dexscreener_block()
+        del blk["caption"], blk["method"]
+        blk["tokens"][0]["liquidity_usd"] = "44K"
+        del blk["tokens"][0]["chain"]
+        d["dexscreener"] = blk
+        errs = "\n".join(validate_report(d, "2026-11-12"))
+        for frag in ("dexscreener.caption", "dexscreener.method", "tokens[0].liquidity_usd", "tokens[0].chain"):
+            self.assertIn(frag, errs)
+
+    def test_dexscreener_tokens_nonempty(self):
+        d = sample()
+        blk = dexscreener_block()
+        blk["tokens"] = []
+        d["dexscreener"] = blk
+        self.assertIn("不能为空列表", "\n".join(validate_report(d, "2026-11-12")))
 
 
 class CheckCliTests(unittest.TestCase):

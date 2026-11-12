@@ -13,6 +13,17 @@ export type Protocol = {
   ath?: { usd: number; date: string };
 };
 
+/** 榜单里的一个代币（Defined 与 DexScreener 共用的展示字段） */
+export type ListedToken = {
+  symbol: string;
+  chain?: string;
+  url: string;
+  liquidity_usd: number;
+  volume_24h_usd: number;
+  status?: string;
+  narrative: string | null;
+};
+
 export type Report = {
   schema_version: 1;
   date: string;
@@ -53,21 +64,23 @@ export type Report = {
       rows: { name: string; dex_volume_usd: number; wallets: number; date?: string }[];
     };
   };
+  /** 旧版 Defined / Codex 新池榜（11-12 期及以前），保留以便旧期照常显示 */
   defined?: {
     title: string;
     fetched_at: string;
     caption?: string;
     changes?: string;
-    tokens: {
-      symbol: string;
-      chain?: string;
-      url: string;
-      liquidity_usd: number;
-      volume_24h_usd: number;
-      status?: string;
-      narrative: string | null;
-    }[];
+    tokens: ListedToken[];
     method?: string;
+  };
+  /** DexScreener 官方 API 榜单（替代 Defined；口径不同，标题 / caption / method 写清实际端点与排序） */
+  dexscreener?: {
+    title: string;
+    fetched_at: string;
+    caption: string;
+    changes?: string;
+    tokens: (ListedToken & { chain: string; address?: string; dex?: string; pair_created_at?: string })[];
+    method: string;
   };
   reddit?: {
     subreddit: string;

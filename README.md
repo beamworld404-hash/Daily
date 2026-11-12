@@ -18,6 +18,6 @@ npm run build       # 校验数据 + 构建到 web/app/dist/
 npm run preview     # 预览构建结果：http://127.0.0.1:4173/
 ```
 
-- 每日更新：新增 `web/content/reports/YYYY-MM-DD.json` → `python3 web/check.py` → `cd web/app && npm run build`，详见 [`web/README.md`](web/README.md#每日更新流程)。
+- 每日更新：自 2026-11-13 起由本机 cron 每天 08:40 自动出报（`deploy/fetch-report.sh`，公开接口抓取，DexScreener 替代 Defined，暂无 X 摘要），09:15 起自动发布，详见 [`deploy/README.md`](deploy/README.md)。人工出报仍可新增 `web/content/reports/YYYY-MM-DD.json` → `python3 web/check.py`，见 [`web/README.md`](web/README.md#每日更新流程)。
 - 预览只监听 127.0.0.1；远程查看用 SSH 端口转发，不要无鉴权对公网开放。**不要占用 5002、8765**（服务器上已有其他预览进程）。
 - 测试：`python3 -m unittest discover -s web/tests -v`；`cd web/app && npm test && npm run typecheck`

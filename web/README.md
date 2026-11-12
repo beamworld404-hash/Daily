@@ -14,6 +14,7 @@ web/
 ├── check.py                          # 数据校验（Python 3.12+ 标准库）
 ├── dailysite/validate.py             # 校验规则
 ├── tests/test_site.py                # 校验的单元测试
+├── tests/test_fetch_report.py        # 出报脚本 deploy/fetch_report.py 的离线测试
 └── app/                              # 网站前端（React 19 + Vite）
     ├── package.json                  # 脚本：dev / build / preview / test / check
     ├── index.html
@@ -66,7 +67,7 @@ npm ci          # 按 package-lock.json 安装依赖
 - **不要使用 5002 和 8765**：东京 VPS 上这两个端口已有别的预览进程。
 - 在远程服务器上预览：从自己电脑做 SSH 端口转发 `ssh -L 4173:127.0.0.1:4173 <服务器>`，再在本机打开 <http://127.0.0.1:4173/>。不要把预览绑定到公网地址。
 - 页面地址（hash 路由，静态托管在任意子路径都能用）：
-  - `#/` 主页（按日期列出各期）；`#/2026-11-12` 某一期全文；`#/2026-11-12/onchain` 同一页全文并滚到某一章（`overview` / `onchain` / `trench` / `defined` / `community` / `x` / `methods`）；`#/2026-11-12/onchain/fng` 同一页全文并滚到某一节；旧的 `#/archive` 也落到主页。分章链接不再打开只含一章的页面。
+  - `#/` 主页（按日期列出各期）；`#/2026-11-12` 某一期全文；`#/2026-11-12/onchain` 同一页全文并滚到某一章（`overview` / `onchain` / `trench` / `defined`（旧期）/ `dexscreener`（2026-11-13 起）/ `community` / `x` / `methods`）；`#/2026-11-12/onchain/fng` 同一页全文并滚到某一节；旧的 `#/archive` 也落到主页。分章链接不再打开只含一章的页面。
 - `dist/` 用的是 ES 模块脚本，需要通过 HTTP 打开（`npm run preview` 或任意静态服务器），直接双击 `file://` 打开会被浏览器拦截。
 
 ### 访问控制
@@ -79,7 +80,15 @@ npm ci          # 按 package-lock.json 安装依赖
 
 ## 每日更新流程
 
-出报方（Daily bot 生成数据，或人工/督工转存）每天只需新增一个文件：
+**自 2026-11-13 起由东京本机自动出报**：每天 08:40（上海时间）cron 运行 `deploy/fetch-report.sh`，抓取公开接口生成当天 JSON，
+校验后投放到 `/home/ubuntu/briefs/incoming/`，09:15 起的发布任务把它提交进 `content/reports/` 并发布到 GitHub Pages 与本机 nginx。
+Daily bot 不再出报。数据源、DexScreener 榜口径、失败行为与手动补跑见 [`deploy/README.md`](../deploy/README.md#出报deployfetch-reportsh)。
+
+- **X 摘要暂缺**：本机没有 beam 的 X 关注时间线连接器，自动出报不写 `x_digest`，`methods.checklist` 里「关注账号 X 摘要」标 `skipped`。
+- **Defined 改为 DexScreener**：新期用 `dexscreener` 字段（DexScreener 官方 API 的「最新代币资料 · 按 24h 成交额」榜），不再写 `defined`；
+  11-12 及以前各期的 `defined` 是当时真实取数，保持原样，页面仍显示「Defined 新池」章。两者口径不同，不可直接比较。
+
+人工出报（例如需要补 X 摘要时）仍是新增一个文件：
 
 1. 新建 `web/content/reports/YYYY-MM-DD.json`，可以复制前一天的文件改数据。字段见下文「数据格式」。
 2. 校验：`python3 web/check.py`（或在 `web/app` 下 `npm run check`）。有错会逐条列出路径，例如 `2026-11-13.json $.revenue.protocols[0].values: 长度 13 与 dates 长度 14 不一致`，改到通过为止。
@@ -87,7 +96,7 @@ npm ci          # 按 package-lock.json 安装依赖
 4. 预览：`npm run preview`，打开 <http://127.0.0.1:4173/>。
 5. 提交数据文件（`git add web/content/reports/YYYY-MM-DD.json`），按仓库流程走分支 / PR。`dist/` 不入库，在要预览或托管的机器上重新构建即可。
 
-不需要改 Daily bot 本身：只要它（或转存的人）能产出符合格式的 JSON。如果暂时仍拿到的是旧版 `.tsx` Page 源码，需要人工把数据转写成 JSON；**只转写原稿已有的事实**，不补数、不估算。
+人工转写时**只转写原稿已有的事实**，不补数、不估算。
 
 ## 测试
 
@@ -103,7 +112,7 @@ cd web/app && npm run typecheck                 # TypeScript 类型检查
 
 - **存原始数，不存排好版的数。** 金额存美元原值（如 `300012`），`$300.01K`、`↑ 3.81%`、占 ATH 比例、看板 KPI 都在页面里计算（`app/src/lib/format.ts`），跟旧版 `formatUsd` 口径一致（`npm test` 有单测对照）。
 - **一个事实只存一处。** 看板四个 KPI 从 `fng` / `revenue` / `tehc.trench` 算出，不另写。
-- **模块可缺省。** `fng`、`revenue`、`tehc`、`defined`、`reddit`、`github`、`x_digest`、`notices` 都可以不写，页面和目录会自动跳过；`methods`（取数与来源）必填，缺项要在 `methods.checklist` 里标 `skipped` / `failed`，不能用旧数字冒充。
+- **模块可缺省。** `fng`、`revenue`、`tehc`、`defined`、`dexscreener`、`reddit`、`github`、`x_digest`、`notices` 都可以不写，页面和目录会自动跳过；`methods`（取数与来源）必填，缺项要在 `methods.checklist` 里标 `skipped` / `failed`，不能用旧数字冒充。
 - **文字里的链接**只支持 `[文字](https://…)` 一种写法，其余内容一律按纯文本转义。
 
 ## 数据格式（schema_version 1）
@@ -123,7 +132,8 @@ cd web/app && npm run typecheck                 # TypeScript 类型检查
 | `fng` |  | `source`；`latest` / `previous`：`date`、`value`（0–100）、`class_en`、`class_zh` |
 | `revenue` |  | `source`、`caption`、`dates[]`（升序 UTC 日期）、`protocols[]`：`name`、`url`、`values[]`（与 dates 等长，最后一项为最新完整日）、`ath`（`usd`、`date`）、`notes[]`。数据源修订了已报道的数字时，`values` 用修订后的值，并在 `notices` 写明「从 X 修订为 Y」 |
 | `tehc` |  | `source`、`caption`；`trench`：`date`、`score`、`label`、`label_zh`、`note`、`history[]`（`date`、`score`，最后一项 = `trench.date`）、`components[]`（`name`、`usd` 或 `count`、`percentile`）、`components_note`；`launchpads` / `bots`：`caption`、`total`、`rows[]`；`bots.warning`；`chains`：`caption`、`rows[]`（`name`、`dex_volume_usd`、`wallets`、`date`，日期与多数不一致的链自动标注） |
-| `defined` |  | `title`、`fetched_at`、`caption`、`changes`（与上一榜对比）、`tokens[]`（按名次：`symbol`、`chain`、`url`、`liquidity_usd`、`volume_24h_usd`、`status`（`新上`、`1 → 3` 等）、`narrative`（无可核实资料写 `null`））、`method` |
+| `defined` |  | 旧期（≤ 2026-11-12）的 Defined / Codex 新池榜。`title`、`fetched_at`、`caption`、`changes`（与上一榜对比）、`tokens[]`（按名次：`symbol`、`chain`、`url`、`liquidity_usd`、`volume_24h_usd`、`status`（`新上`、`1 → 3` 等）、`narrative`（无可核实资料写 `null`））、`method` |
+| `dexscreener` |  | 2026-11-13 起替代 `defined`。`title`、`fetched_at`、`caption`（必填，写清实际端点与口径）、`changes`（只有上一期也是 DexScreener 榜才做同口径对比）、`tokens[]`（`symbol`、`chain`（必填）、`url`（必须是接口返回的 `https://dexscreener.com/{链}/…`）、`liquidity_usd`、`volume_24h_usd`、可选 `status`、`address`、`dex`、`pair_created_at`（北京时间）、`narrative`（无可核实资料写 `null`））、`method`（必填）。页面章标题「DexScreener 最新资料代币」 |
 | `reddit` |  | `subreddit`、`url`、`since`、`summary`、`note`、`posts[]`（`title`、`url`、`author`、`comments`：未取到写 `null`） |
 | `github` |  | `org`、`url`、`updated`（布尔）、`text` |
 | `x_digest` |  | `caption`、`window`、`mainline`；`accounts[]`：`name`、`handle`（不带 @）、`items[]`（`title`、`detail`、`url` 或 `links[]`，可选 `truncated` / `unverified` 标记）、`note`；`tools[]`：`title`、`detail`、`links[]` |

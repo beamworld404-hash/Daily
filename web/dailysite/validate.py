@@ -10,6 +10,7 @@ from typing import Any
 
 DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 URL_RE = re.compile(r"^https?://\S+$")
+DEXSCREENER_URL_RE = re.compile(r"^https://dexscreener\.com/[a-z0-9-]+/\S+$")
 SCHEMA_VERSION = 1
 CHECK_STATUSES = {"ok", "partial", "skipped", "failed"}
 NOTICE_TONES = {"info", "warning", "danger"}
@@ -198,6 +199,30 @@ def validate_report(data: Any, filename_date: str | None = None) -> list[str]:
             v.get(t, "volume_24h_usd", pt, NUM)
             v.get(t, "narrative", pt, str, required=False)
             v.get(t, "status", pt, str, required=False)
+
+    # DexScreener（替代 Defined；口径不同，单独字段）
+    ds = v.get(data, "dexscreener", r, dict, required=False)
+    if ds is not None:
+        p = f"{r}.dexscreener"
+        v.get(ds, "title", p, str)
+        v.get(ds, "fetched_at", p, str)
+        v.get(ds, "caption", p, str)  # 必须写清实际端点与口径
+        v.get(ds, "method", p, str)
+        v.get(ds, "changes", p, str, required=False)
+        for i, t in enumerate(v.items(ds, "tokens", p, nonempty=True)):
+            pt = f"{p}.tokens[{i}]"
+            v.get(t, "symbol", pt, str)
+            v.get(t, "chain", pt, str)
+            u = v.url(t, "url", pt)
+            if u and not DEXSCREENER_URL_RE.match(u):
+                v.err(f"{pt}.url", f"应为 DexScreener 官方接口返回的 https://dexscreener.com/… 页面链接，实际为 {u!r}")
+            v.get(t, "liquidity_usd", pt, NUM)
+            v.get(t, "volume_24h_usd", pt, NUM)
+            v.get(t, "narrative", pt, str, required=False)
+            v.get(t, "status", pt, str, required=False)
+            v.get(t, "address", pt, str, required=False)
+            v.get(t, "dex", pt, str, required=False)
+            v.get(t, "pair_created_at", pt, str, required=False)
 
     # Reddit
     rd = v.get(data, "reddit", r, dict, required=False)

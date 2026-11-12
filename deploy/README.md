@@ -28,22 +28,75 @@ reload（nginx 未运行时才 start），最后用 `curl` 自检。
 
 从 2026-11-13 起，每天新一期自动发布到 GitHub Pages（https://beamworld404-hash.github.io/）和本机 nginx（80 端口）。
 
-**本机只发布、不出报。** 日报数据仍由 Daily bot 每天 09:00（上海时间）采集生成（其中关注时间线需要 beam 的 X 连接器，
-本机没有）。本机流程只负责「当天 JSON 送到之后」到「两个站点都更新」这一段，不生成、不估算、不补写任何数据；
-当天数据没送到就不发布。
+**本机自动出报并发布。** 自 2026-11-13 起 Daily bot 不再出报，数据由东京本机脚本每天 08:40（上海时间）抓取公开接口生成，
+再走下面的「incoming → 校验 → 提交 → Pages → nginx」管道。出报只写本次实际取到的数字和事实，某个源失败就在
+`methods` 里标 `failed` / `partial` 并省略对应章节，不估算、不补写、不沿用旧数字。
+
+### 出报（`deploy/fetch-report.sh`）
+
+```bash
+bash deploy/fetch-report.sh                      # 今天（上海时间）：抓取 → 校验 → 投放到 incoming
+bash deploy/fetch-report.sh --dry-run            # 只写临时目录（/tmp/daily-fetch-dryrun-*）并校验，不进 incoming、不发布
+bash deploy/fetch-report.sh --dry-run --date 2026-11-14 --out /tmp/x   # 演练某一期（数据仍是此刻快照）
+bash deploy/fetch-report.sh --force              # incoming / 仓库里已有当天文件时仍重抓（内容相同则不改写）
+```
+
+核心逻辑在 `deploy/fetch_report.py`（Python 3.12+ 标准库，**不需要任何密钥**），测试在 `web/tests/test_fetch_report.py`（离线）。
+
+| 数据源 | 请求（全部公开、官方） | 写入字段 |
+|---|---|---|
+| Alternative.me 恐惧贪婪 | `https://api.alternative.me/fng/?limit=2` | `fng` |
+| DefiLlama | `summary/fees/fomo`、`summary/fees/gmgn`（`dataType=dailyRevenue`），只取已公布的完整 UTC 日（最近 14 天）；与上一期同日读数不同就在 `notices` 与 `revenue.notes` 写明「从 X 修订为 Y」，图表用修订后的值 | `revenue` |
+| TehcScreener | 仅官方 `/api/v1`：`status`、`trench`、`launchpads?window=1d`、`bots?window=1d`、`chains`（不请求 RWA，不调未文档化接口）；Trench 历史与上一期报道不同时写修订提示 | `tehc` |
+| Reddit | 只用 r/Monad 新帖 Atom RSS，按条目 `updated` 落在覆盖窗口内筛选；只列标题和作者，不做内容概括；评论数写 `--`（不取评论 RSS） | `reddit` |
+| GitHub | 未登录公开 REST：`/orgs/rarefriends/repos`，再按库 `/pulls?state=all&sort=updated`；不用 search、不克隆 | `github` |
+| DexScreener（替代 Defined / Codex） | 见下 | `dexscreener` |
+| X | **不抓**：本机没有 beam 的 X 关注时间线连接器。不写 `x_digest`，`methods.checklist` 标 `skipped` | — |
+
+**DexScreener 榜的口径**（官方文档 <https://docs.dexscreener.com/api/reference>）：
+
+1. `GET https://api.dexscreener.com/token-profiles/latest/v1`（限 60 次/分）：最新代币资料（token profiles）列表，约 30 条，按资料时间给出。官方接口**没有**「24h 新池」或热度排序端点，所以这不是新池榜。
+2. 按链分批 `GET /tokens/v1/{chainId}/{最多 30 个地址}`（限 300 次/分）取交易对。
+3. 每个代币只取它作为 `baseToken` 的交易对中 `liquidity.usd` 最高的一个；接口没给流动性（如仍在联合曲线上）或 24h 成交额的不入选；要求流动性 ≥ $1K、`volume.h24` ≥ $1K；按 `volume.h24` 降序取前 5。
+4. 链接用接口返回的交易对 `url`，必须是同链的 `https://dexscreener.com/{chainId}/…`（`validate.py` 也会检查）。
+5. `narrative` 一律 `null`：代币资料里的描述由项目方自行提交、未经核实。
+
+与旧 Defined 榜（Codex `filterPairs`、≤24h 新池、`trendingScore4` 排序）**不是同一套口径**。只有上一期也有 `dexscreener` 时才做「新上 / 名次 / 掉出」对比；第一期（上一期是 Defined 榜）只注明数据源已更换、不可直接对比。不再调用 Defined / Codex。
+
+**覆盖窗口**：起点为上一期正式早报（仓库 `web/content/reports/` 里日期更早的最新一期）`methods.properties`「本次取数」的开始时刻，取不到时用其 `issued_at`。
+
+**投放**：先写到临时目录，用 `web/check.py --content <只含这一份的目录>` 校验，通过后复制成
+`incoming/.YYYY-MM-DD.json.tmp.<pid>`（权限 644），同目录 `rename` 成 `YYYY-MM-DD.json`，发布脚本不会读到半个文件。
+
+**幂等**：incoming 或仓库里已有当天文件时默认不重抓（退出码 0）；`--force` 重抓后内容与 incoming 里的相同则不改写。
+发布的幂等由 `daily-cron.sh` / `apply-report.sh` 负责。
+
+**日期**：正式出报只能生成今天这一期（数据是此刻快照，写成别的日期会错标）；`--date` 指定其他日期只能配合 `--dry-run`。
+
+**失败行为**：每个源单独重试（429 / 5xx / 网络错误最多 3 次），失败的源标 `failed` 并省略章节、在 `notices` 写「部分数据源失败」；
+恐惧贪婪、DefiLlama、TehcScreener、DexScreener 四个数值源**全部**失败，或校验不通过时，不生成任何文件，退出码 1，
+10:30 的发布检查会记「今日数据未送达」，两个站点保持前一期。
+
+**日志**（仓库外，不含密钥——本来也没有）：
+
+- `logs/fetch-YYYY-MM-DD.log`：每次请求的 URL 与 HTTP 状态、各源结果、校验结果；`--dry-run` 记到 `logs/fetch-dryrun.log`
+- `logs/fetch-YYYY-MM-DD.status`：`state=done`（已投放）/ `skipped`（已存在未重抓）/ `failed`
+- `logs/runs/run-<时间>/`：本次各接口原始响应（保留最近 30 次）；dry-run 的原始响应在输出目录里
 
 ### 数据入口
 
 - 目录：`/home/ubuntu/briefs/incoming/`（仓库外，权限 755，只有 ubuntu 可写）
 - 文件：`YYYY-MM-DD.json`（上海时间当天的日期），内容必须符合 `schema_version` 1，`date` 字段与文件名一致
-- Daily bot / 协调者在 09:00 出报后把文件放到这里即可（建议先写临时文件再 `mv` 成正式文件名，避免读到半个文件）
+- 正常由 08:40 的 `deploy/fetch-report.sh` 写入；手动放文件时也请先写临时文件再 `mv` 成正式文件名
 
 ### 定时（用户 crontab，Asia/Shanghai）
 
-见 `deploy/crontab.txt`，用 `bash deploy/install-cron.sh` 安装（可重复执行，只替换自己那一段）：
+见 `deploy/crontab.txt`，用 `bash deploy/install-cron.sh` 安装（可重复执行，只替换 `daily-report auto publish` 与
+`daily-report auto fetch` 这两段，其余 crontab 条目不动）：
 
 | 时间 | 命令 |
 |---|---|
+| 08:40 | `deploy/fetch-report.sh`（出报，投放到 incoming） |
 | 09:15、09:30、09:45、10:00、10:15 | `deploy/daily-cron.sh` |
 | 10:30 | `deploy/daily-cron.sh --final` |
 
@@ -93,6 +146,10 @@ log=/home/ubuntu/briefs/daily-report-incr-design/logs/daily-2026-11-13.log
 ### 手动补跑
 
 ```bash
+# 08:40 出报失败（例如某接口一时不可用）：当天内直接重跑出报，09:15–10:30 的发布检查会接着发布
+bash deploy/fetch-report.sh
+# 10:30 之后才出报成功：出报后手动发布
+bash deploy/fetch-report.sh && bash deploy/apply-report.sh /home/ubuntu/briefs/incoming/$(date +%F).json
 # 数据晚到（例如 10:30 之后才放进 incoming）：直接发布
 bash deploy/apply-report.sh /home/ubuntu/briefs/incoming/2026-11-13.json
 # 或按 cron 的逻辑检查某一天
@@ -103,6 +160,7 @@ bash deploy/apply-report.sh --dry-run /path/to/2026-11-13.json
 
 ### 失败时会怎样
 
+- 出报失败（四个数值源全部失败或校验不通过）：不生成文件，`fetch-YYYY-MM-DD.status` 记 `failed`；之后同下一条
 - 数据没送到：10:30 记 `failed`「今日数据未送达」，两个站点保持前一期，不会发布空的或编造的一期
 - 校验 / 构建失败：不提交、不推送、不切换；临时放入仓库的数据文件会还原
 - 分支推送失败：本地已有数据提交，状态 `failed`；重跑会继续推送（只会代推纯数据提交）
