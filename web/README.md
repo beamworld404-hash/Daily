@@ -3,7 +3,7 @@
 日报通过这个**独立网站**交付，用普通浏览器打开，不依赖 Grok Bot 的 Page / Canvas，也不在聊天里发报告。
 
 - 每天一份 JSON 数据文件 → `check.py` 校验 → `npm run build` 构建成静态站 → 浏览器打开。
-- 前端是 React 19 + Vite + TypeScript，界面用 [affectUI](https://www.affectui.com/docs/installation) 组件（含 Pro 组件）搭建，数据仍来自 `content/reports/*.json`。
+- 前端是 React 19 + Vite + TypeScript，不依赖第三方 UI 组件库，数据来自 `content/reports/*.json`。
 - 构建产物是纯静态文件（`app/dist/`），不需要后端，不请求外部 CDN 或字体。
 
 ## 目录
@@ -14,13 +14,11 @@ web/
 ├── check.py                          # 数据校验（Python 3.12+ 标准库）
 ├── dailysite/validate.py             # 校验规则
 ├── tests/test_site.py                # 校验的单元测试
-└── app/                              # 网站前端（React 19 + affectUI）
+└── app/                              # 网站前端（React 19 + Vite）
     ├── package.json                  # 脚本：dev / build / preview / test / check
-    ├── components.json               # shadcn CLI 配置，含 @affectui registry（密钥用环境变量，不写在文件里）
     ├── index.html
     ├── src/
     │   ├── App.tsx                   # 路由、顶栏、深浅色、分区标签、往期
-    │   ├── components/ui/            # affectUI 组件源码（由 shadcn CLI 安装，保持原样）
     │   ├── components/site/          # 各分区：Overview / Onchain / Feeds（新池、社区、X、来源）
     │   ├── lib/                      # 数据类型、格式化、读取 JSON、链接渲染
     │   └── styles.css                # 页面版式（不覆盖组件自带样式）
@@ -49,7 +47,7 @@ cd web/app
 npm ci          # 按 package-lock.json 安装依赖
 ```
 
-affectUI 组件源码已经在 `src/components/ui/` 里入库，**日常构建不需要 affectUI 密钥**。只有新增或更新 affectUI 组件时才需要（见下文）。
+构建不需要任何访问密钥。
 
 ## 本地启动与预览
 
@@ -96,33 +94,6 @@ cd web/app && npm test                          # 格式化口径
 cd web/app && npm run typecheck                 # TypeScript 类型检查
 ```
 
-## affectUI 组件
-
-按 [affectUI 安装文档](https://www.affectui.com/docs/installation#pro) 用 shadcn CLI 安装，文件落在 `src/components/ui/<slug>.tsx`，**保持组件自带样式与动效，只改内容和 props**。
-
-| 组件 | 类型 | 用在哪里 |
-|---|---|---|
-| KPI Chart | Pro | 概览：FOMO / GMGN 近 14 日收入（标题数、较前一日变化、悬停逐日数值、占 ATH）；链上：Trench 近 5 日分数 |
-| Compact Breakdown | Pro | 链上：发射台份额（成交额 / 新发射切换）、交易机器人份额（成交额 / 手续费切换） |
-| Data Table | Pro | 逐日收入表、发射台 / 机器人明细、公链、Defined 新池榜、Reddit 新帖（均为只读 `editable={false}`，可排序、可复制） |
-| Change Summary | 免费 | 概览：「较上一期」四项变化 |
-| Segmented Control | 免费 | 分区标签（`kind="tabs"`）、深浅色切换 |
-| Button | 免费 | 顶栏前一期 / 后一期 / 往期 |
-| Grid Background | 免费 | 头部背景 |
-
-### 新增或更新组件（需要 Pro 密钥）
-
-`components.json` 里已注册 `@affectui` registry，请求头写的是 `Bearer ${AFFECTUI_TOKEN}`，**密钥本身不入库**。安装时把密钥临时放进环境变量：
-
-```bash
-cd web/app
-AFFECTUI_TOKEN="$(cat ~/.config/affectui/token)" npx shadcn@latest add @affectui/<slug>
-```
-
-- 不要 `echo` / 打印密钥，不要把它写进 `components.json`、README、`.env` 之外的任何入库文件。确实要用文件时放在 `web/app/.env.local`（已被 `.gitignore` 排除）。
-- 免费组件不需要密钥：`npx shadcn@latest add @affectui/<slug>`。
-- 组件文档：<https://www.affectui.com/llms-full.txt>，或 MCP `https://www.affectui.com/api/mcp`。
-
 ## 数据约定
 
 ### 原则
@@ -157,17 +128,4 @@ AFFECTUI_TOKEN="$(cat ~/.config/affectui/token)" npx shadcn@latest add @affectui
 
 ## 设计说明
 
-- **信息层次：结论 → 证据 → 审计。** 头部是日期、出报时间、导语和覆盖窗口；下面是分区标签：
-  - **概览**：修订提示 → 「较上一期」（Change Summary）+ 今日要点 → 收入（两张 KPI Chart）→ 恐惧贪婪。
-  - **链上**：Trench 分数趋势与分项分位 → 发射台、交易机器人（份额卡 + 明细表）→ 公链。
-  - **新池**：榜单变化 → 新池榜表格 → 有可核实资料的叙事（其余一行列出「暂无」）。
-  - **社区**：Reddit 摘要与新帖、GitHub 状态。
-  - **X 摘要**：今日主线 → 按账号分组的卡片（「截断」「未核实」文字标签、每个账号的「读法」）→ 工具。
-  - **来源**：各数据源状态（完成 / 部分 / 未取 / 失败）、本次取数、口径、来源入口。标签上显示「N 项未完成」，审计问题不会被埋掉。
-- **标签计数**：新池、社区、X 摘要的标签带条数，进分区前就知道有多少内容。分区写在地址里，可直接分享某个分区。
-- **颜色语义：** 只有收入变化用升绿降红（KPI Chart 的变化值、Change Summary 的箭头）；恐惧贪婪、Trench 的点数变化一律中性灰，不暗示好坏。Trench 图表不传 `delta`，避免组件自动着色。状态都配文字标签，不只靠颜色。
-- **协议颜色**按出现顺序固定（第 1 个蓝 `#2f6bff`、第 2 个粉 `#ec4899`），沿用 affectUI 示例配色。
-- **份额卡**最多 7 段：前 6 名 + 「其他 N 项」，避免颜色过多；每一行的准确数值在旁边的明细表里。
-- **视觉**：页面底色、灰色托盘、白卡、圆角和阴影都取 affectUI 默认主题的值，自定义的文字卡片（要点、X 摘要、来源）与组件看起来是一套。只额外设置了 `--aui-font`，给组件补上中文字体。
-- **深浅色**：默认跟随系统，顶栏可切换并记在本机浏览器；组件通过 `<html data-theme="dark">` 自动切换。
-- **移动端**：两栏布局在 900px 以下变单栏，分区标签可横向滑动，顶栏在窄屏只保留「往期」和外观切换。
+界面正在重做（affectUI 已移除），见后续提交。

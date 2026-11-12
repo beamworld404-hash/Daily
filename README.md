@@ -8,7 +8,7 @@
 
 ## 关注清单日报网站
 
-日报通过独立网站交付，用普通浏览器打开，不再用 Grok Bot Page，也不再在聊天里发报告。前端是 React 19 + [affectUI](https://www.affectui.com) 组件，数据来自 `web/content/reports/*.json`。代码与完整说明在 [`web/`](web/README.md)。
+日报通过独立网站交付，用普通浏览器打开，不再用 Grok Bot Page，也不再在聊天里发报告。前端是 React 19 + Vite，数据来自 `web/content/reports/*.json`。代码与完整说明在 [`web/`](web/README.md)。
 
 ```bash
 cd web/app
@@ -21,4 +21,3 @@ npm run preview     # 预览构建结果：http://127.0.0.1:4173/
 - 每日更新：新增 `web/content/reports/YYYY-MM-DD.json` → `python3 web/check.py` → `cd web/app && npm run build`，详见 [`web/README.md`](web/README.md#每日更新流程)。
 - 预览只监听 127.0.0.1；远程查看用 SSH 端口转发，不要无鉴权对公网开放。**不要占用 5002、8765**（服务器上已有其他预览进程）。
 - 测试：`python3 -m unittest discover -s web/tests -v`；`cd web/app && npm test && npm run typecheck`
-- affectUI Pro 密钥只用环境变量 `AFFECTUI_TOKEN` 临时传入，绝不入库；组件源码已入库，日常构建不需要密钥。

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """关注清单日报：校验 web/content/reports/*.json。
 
-网站由 web/app（React + affectUI）在构建时直接读取这些 JSON；
+网站由 web/app（React + Vite）在构建时直接读取这些 JSON；
 `npm run build` 会先运行本脚本，校验不通过就不构建。
 
 用法（仓库根目录）：

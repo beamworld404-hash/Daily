@@ -3,7 +3,7 @@
   "private": true,
   "version": "2.0.0",
   "type": "module",
-  "description": "关注清单日报网站（React 19 + affectUI）",
+  "description": "关注清单日报网站（React 19 + Vite）",
   "engines": {
     "node": ">=20.19"
   },
