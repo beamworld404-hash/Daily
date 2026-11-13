@@ -65,8 +65,8 @@ export function Note({ title, tone = "info", children }: { title?: string; tone?
 }
 
 /**
- * 单序列柱状图：柱宽 ≤ 20px、顶端 4px 圆角，只标注最后一根（最新）的数值。
- * 图下是轻量图注与逐日数值（直接展开，不折叠），读屏用户读这份列表。
+ * 单序列柱状图：柱宽 ≤ 20px、顶端 4px 圆角，只标注最后一根（最新）的数值；
+ * 完整数值在下方可展开的表格里，读屏用户直接读表。
  */
 export function Columns({
   points,
@@ -77,41 +77,37 @@ export function Columns({
   points: { key: string; tick: string; value: number }[];
   format: (v: number) => string;
   label: string;
-  /** 最新一根柱与数值的语义色（涨跌、冷热）；不给则用正文深色 */
+  /** 最新一根柱与数值的语义色（涨跌、冷热）；不给则用强调色 */
   tone?: Tone;
 }) {
   const max = Math.max(...points.map((p) => p.value), 0) || 1;
   const last = points.length - 1;
-  const range = points.length ? `${points[0].tick} 至 ${points[last].tick}` : "";
   return (
     <figure className={`chart${tone ? ` chart-tone-${tone}` : ""}`}>
-      <div className="chart-card">
-        <div className="chart-plot" aria-hidden="true">
-          {points.map((p, i) => (
-            <div className="chart-slot" key={p.key} title={`${p.tick}　${format(p.value)}`}>
-              {i === last ? <span className="chart-value">{format(p.value)}</span> : null}
-              <span className={`chart-bar${i === last ? " is-latest" : ""}`} style={{ height: `${(p.value / max) * 100}%` }} />
-            </div>
-          ))}
-        </div>
-        <div className="chart-axis" aria-hidden="true">
-          {points.map((p, i) => (
-            <span key={p.key}>{i === last || (i % 3 === 0 && last - i >= 2) ? p.tick : ""}</span>
-          ))}
-        </div>
-      </div>
-      <figcaption className="chart-caption">
-        {label}
-        {range ? ` · ${range}` : ""}
-      </figcaption>
-      <ol className="chart-values" aria-label={`${label}：逐日数值`}>
-        {points.map((p) => (
-          <li key={p.key}>
-            <span className="chart-values-day">{p.tick}</span>
-            <span className="chart-values-num">{format(p.value)}</span>
-          </li>
+      <div className="chart-plot" aria-hidden="true">
+        {points.map((p, i) => (
+          <div className="chart-slot" key={p.key} title={`${p.tick}　${format(p.value)}`}>
+            {i === last ? <span className="chart-value">{format(p.value)}</span> : null}
+            <span className={`chart-bar${i === last ? " is-latest" : ""}`} style={{ height: `${(p.value / max) * 100}%` }} />
+          </div>
         ))}
-      </ol>
+      </div>
+      <div className="chart-axis" aria-hidden="true">
+        {points.map((p, i) => (
+          <span key={p.key}>{i === last || (i % 3 === 0 && last - i >= 2) ? p.tick : ""}</span>
+        ))}
+      </div>
+      <details className="chart-table">
+        <summary>{label}：逐日数值</summary>
+        <Table
+          caption={label}
+          rows={points}
+          columns={[
+            { label: "日期", cell: (p) => p.key },
+            { label: "数值", cell: (p) => format(p.value), num: true },
+          ]}
+        />
+      </details>
     </figure>
   );
 }
@@ -132,5 +128,14 @@ export function ThemeToggle() {
         </svg>
       )}
     </button>
+  );
+}
+
+/** 站点标记：左上角 32px，点回首页 */
+export function Mark() {
+  return (
+    <a className="mark" href="#/" aria-label="关注清单日报首页">
+      <span aria-hidden="true">报</span>
+    </a>
   );
 }
