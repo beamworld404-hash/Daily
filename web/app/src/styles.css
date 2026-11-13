@@ -1,31 +1,31 @@
 /*
  * 关注清单日报 · 版式
- * 对标参考站的作品库页面：白底 + stone 灰阶；全站只用一套苹果系统字体（Apple 设备上为 San Francisco
- * 与苹方），标题、正文、数字、图表一律同一字族，不加载任何网页字体；
- * 主页为 456px 居中日期列表 + 底部扇形书卡；一期全文页为 576px 正文列（与参考站文章页
- * max-w-xl = 36rem 一致）+ 左侧固定「← 全部日报」与整期目录（窄屏收进「目录」抽屉）。
+ * 参照作品集网页外壳：近白底、深灰正文、浅灰辅助字；没有页头，只在右上角留深浅色切换。
+ * 全站一套系统无衬线字体（中文落到苹方 / 思源黑体 / 微软雅黑），不加载网页字体。
+ * 主页：540px 居中窄列，一段简介 + 纯文字分组列表（左标题、右日期）。
+ * 详情：同一 540px 正文列完整展开一期；桌面左侧固定「← 全部日报」与章节目录，
+ * 窄屏改为顶部吸附、可横向滚动的章节导航。
+ * 没有入场动效；只有 hover 时的颜色过渡，且尊重 prefers-reduced-motion。
  */
 
 :root {
-  --bg: #ffffff;
-  --ink: #171717; /* 基础字色 */
-  --strong: #1c1917; /* stone-900：标题、行标题 */
-  --body: #57534e; /* stone-600：导语、正文 */
-  --muted: #78716c; /* stone-500：行说明、表头 */
-  --faint: #a8a29e; /* stone-400：返回、目录、上一章下一章 */
-  --line: #e7e5e4; /* stone-200：分隔线 */
-  --hover: rgb(245 245 244 / 0.7); /* stone-100/70 */
-  --panel: #fafaf9; /* stone-50 */
-  --accent: #e54f10;
+  --bg: #fafafa;
+  --card: #ffffff;
+  --panel: #f3f3f3;
+  --ink: #1f1f1f; /* 正文 */
+  --strong: #0a0a0a; /* 标题、hover */
+  --body: #1f1f1f;
+  --muted: #737373; /* 组名、日期、图注 */
+  --faint: #a3a3a3; /* 目录未选中项、坐标轴 */
+  --line: #e7e7e7;
+  --underline: #d4d4d4;
+  --accent: #c2410c;
   --warn: #b45309;
   --danger: #b91c1c;
   --ok: #15803d;
+  --column: 540px;
 
-  /*
-   * 全站唯一字体栈：苹果系统自带字体。Apple 设备上 -apple-system / BlinkMacSystemFont 落到 San Francisco，
-   * 中文落到苹方；其它系统依次退到各自的系统无衬线字体。数字不另配字体，只开等宽数字特性。
-   */
-  --font: -apple-system, BlinkMacSystemFont, system-ui, "PingFang SC", "Hiragino Sans GB", "Helvetica Neue", "Segoe UI", Roboto, "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+  --font: -apple-system, BlinkMacSystemFont, system-ui, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Noto Sans CJK SC", "Source Han Sans SC", "Microsoft YaHei", "Helvetica Neue", Roboto, sans-serif;
 
   /* 关键数字着色：恐惧与贪婪五档、涨跌、冷热。浅色底上对比度均 ≥ 4.5:1 */
   --t-xfear: #b91c1c;
@@ -35,7 +35,7 @@
   --t-xgreed: #166534;
   --t-up: #15803d;
   --t-down: #b91c1c;
-  --t-flat: #78716c;
+  --t-flat: #737373;
   --t-cold: #1d4ed8;
   --t-hot: #c2410c;
 
@@ -43,16 +43,17 @@
 }
 
 :root[data-theme="dark"] {
-  --bg: #0c0a09; /* stone-950 */
-  --ink: #e7e5e4;
-  --strong: #f5f5f4;
-  --body: #a8a29e;
-  --muted: #a8a29e;
-  --faint: #8a837d;
-  --line: #292524;
-  --hover: rgb(41 37 36 / 0.3);
-  --panel: #1c1917;
-  --accent: #f97338;
+  --bg: #111111;
+  --card: #171717;
+  --panel: #1c1c1c;
+  --ink: #e5e5e5;
+  --strong: #fafafa;
+  --body: #e5e5e5;
+  --muted: #a3a3a3;
+  --faint: #737373;
+  --line: #262626;
+  --underline: #404040;
+  --accent: #fb923c;
   --warn: #f59e0b;
   --danger: #f87171;
   --ok: #4ade80;
@@ -63,7 +64,7 @@
   --t-xgreed: #22c55e;
   --t-up: #4ade80;
   --t-down: #f87171;
-  --t-flat: #a8a29e;
+  --t-flat: #a3a3a3;
   --t-cold: #60a5fa;
   --t-hot: #fb923c;
   color-scheme: dark;
@@ -85,9 +86,10 @@ body {
   margin: 0;
   background: var(--bg);
   color: var(--ink);
-  font-size: 16px;
-  line-height: 1.5;
+  font-size: 15px;
+  line-height: 26px;
   -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
 }
 
 h1,
@@ -112,8 +114,13 @@ textarea {
 }
 
 :focus-visible {
-  outline: 2px solid var(--accent);
+  outline: 2px solid var(--strong);
   outline-offset: 2px;
+  border-radius: 2px;
+}
+
+[hidden] {
+  display: none !important;
 }
 
 .sr-only {
@@ -125,40 +132,13 @@ textarea {
   white-space: nowrap;
 }
 
-.arrow {
-  font-size: 18px;
-  line-height: 1;
-}
+/* ---------- 右上角：深浅色切换 ---------- */
 
-/* ---------- 顶栏：左上角站点标记，右上角深浅色 ---------- */
-
-.topbar {
+.corner {
   position: fixed;
-  inset: 0 0 auto;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 24px;
-  pointer-events: none;
-  z-index: 30;
-}
-
-.topbar > * {
-  pointer-events: auto;
-}
-
-.mark {
-  display: grid;
-  place-items: center;
-  width: 32px;
-  height: 32px;
-  border-radius: 4px;
-  background: var(--strong);
-  color: var(--bg);
-  font-size: 17px;
-  font-weight: 600;
-  line-height: 1;
-  text-decoration: none;
+  top: 16px;
+  right: 16px;
+  z-index: 40;
 }
 
 .icon-btn {
@@ -172,108 +152,144 @@ textarea {
   background: transparent;
   color: var(--faint);
   cursor: pointer;
-  transition: color 0.15s ease-out, background-color 0.15s ease-out;
+  transition: color 0.15s ease-out;
 }
 
 .icon-btn:hover {
   color: var(--strong);
-  background: var(--hover);
 }
 
-/* ---------- 目录页（作品库列表） ---------- */
+.icon-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* ---------- 正文窄列 ---------- */
+
+.column {
+  width: min(var(--column), 100% - 48px);
+  margin: 0 auto;
+}
 
 .index {
-  width: min(456px, 100% - 48px);
-  margin: 0 auto;
-  padding: 120px 0 280px; /* 底部留出书卡的位置 */
+  padding: 120px 0 120px;
 }
 
-.display {
-  font-weight: 700;
-  font-size: 44px;
-  line-height: 52px;
-  letter-spacing: -0.02em;
+/* 主页简介：小标题 + 浅灰副题 + 两段正文，没有巨型页头 */
+.intro {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.intro-title {
+  font-size: 15px;
+  line-height: 26px;
+  font-weight: 500;
   color: var(--strong);
-  margin-bottom: 16px;
-  text-wrap: balance;
 }
 
-.lead {
-  font-size: 16px;
-  line-height: 24px;
-  color: var(--body);
+.intro-sub {
+  margin: -8px 0 6px;
+  color: var(--muted);
+}
+
+.intro p,
+.group-note {
   text-wrap: pretty;
+  overflow-wrap: break-word;
+}
+
+.inline-link,
+.group-note a,
+.lead a {
+  text-decoration: underline;
+  text-decoration-color: var(--underline);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+  transition: color 0.15s ease-out;
+}
+
+.inline-link:hover,
+.group-note a:hover,
+.lead a:hover {
+  color: var(--strong);
+}
+
+/* 分组：细分隔线 + 浅灰组名，组间大留白 */
+.group {
+  margin-top: 40px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+}
+
+.group-label {
+  margin-bottom: 10px;
+  font-size: 15px;
+  line-height: 26px;
+  font-weight: 400;
+  color: var(--muted);
+}
+
+.group-note {
+  margin-top: 10px;
+  color: var(--muted);
+}
+
+/* 主页列表里的导语摘要只作浅灰辅助文字：关键数字不着色，着色留给详情页 */
+.group-note .tone {
+  color: inherit;
+  font-weight: inherit;
 }
 
 .rows {
   list-style: none;
   padding: 0;
-  margin-top: 40px;
 }
 
 .row {
-  position: relative;
   display: flex;
-  align-items: center;
+  align-items: baseline;
   justify-content: space-between;
-  gap: 8px;
-  margin: 0 -24px;
-  padding: 20px 24px;
-  border-radius: 12px;
+  gap: 16px;
+  padding: 1px 0;
   text-decoration: none;
-  transition: background-color 0.15s ease-out;
-}
-
-.row::after {
-  content: "";
-  position: absolute;
-  left: 24px;
-  right: 24px;
-  bottom: 0;
-  height: 1px;
-  background: var(--line);
-}
-
-.row:hover {
-  background: var(--hover);
-}
-
-.row-text {
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
 }
 
 .row-title {
-  font-size: 15px;
-  line-height: 1.5;
-  font-weight: 500;
+  min-width: 0;
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-color: var(--underline);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 5px;
+  transition: color 0.15s ease-out;
+}
+
+.row-meta {
+  flex-shrink: 0;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+  transition: color 0.15s ease-out;
+}
+
+.row:hover .row-title {
   color: var(--strong);
 }
 
-.row-desc {
-  margin-top: 2px;
-  font-size: 14px;
-  line-height: 20px;
-  color: var(--muted);
-  overflow-wrap: anywhere;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
-  overflow: hidden;
+.row:hover .row-meta {
+  color: var(--ink);
 }
 
 .pill {
   flex-shrink: 0;
   display: inline-block;
-  padding: 2px 10px;
+  padding: 0 7px;
   border: 1px solid currentColor;
   border-radius: 999px;
   font-size: 11px;
-  line-height: 1.5;
+  line-height: 18px;
   font-weight: 500;
-  letter-spacing: 0.05em;
   white-space: nowrap;
   vertical-align: 1px;
 }
@@ -287,133 +303,41 @@ textarea {
   border-color: var(--line);
 }
 
-/* ---------- 底部扇形书卡 ---------- */
+/* ---------- 一期全文页 ---------- */
 
-.books {
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 0;
-  z-index: 20;
-}
-
-.book {
-  position: absolute;
-  left: 50%;
-  bottom: calc(-1 * var(--h) + 112px - var(--drop));
-  width: var(--w);
-  height: var(--h);
-  margin-left: calc(var(--w) / -2);
-  padding: 16px;
-  border-radius: 16px;
-  overflow: hidden;
-  text-decoration: none;
-  transform: translateX(var(--x)) rotate(var(--r));
-  transform-origin: 50% 100%;
-  transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
-  user-select: none;
-}
-
-.book:hover,
-.book:focus-visible {
-  transform: translateX(var(--x)) rotate(var(--r)) translateY(-28px);
-}
-
-
-.book-title {
-  display: block;
-  font-size: 22px;
-  line-height: 26px;
-  font-weight: 600;
-  letter-spacing: -0.01em;
-  white-space: pre-line;
-}
-
-.book-lines {
-  position: absolute;
-  left: 16px;
-  right: 16px;
-  top: 92px;
-  height: 28px;
-  background: repeating-linear-gradient(90deg, currentColor 0 2px, transparent 2px 9px);
-  opacity: 0.55;
-}
-
-/* ---------- 一期全文页：左侧固定整期目录 + 居中正文 ---------- */
-
-.topbar-tools {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.toc-toggle {
-  display: none;
-  height: 32px;
-  padding: 0 12px;
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  background: var(--bg);
-  color: var(--body);
-  font: inherit;
-  font-size: 14px;
-  line-height: 20px;
-  cursor: pointer;
-  transition: color 0.15s ease-out, background-color 0.15s ease-out;
-}
-
-.toc-toggle:hover {
-  color: var(--strong);
-  background: var(--hover);
-}
-
-.toc-backdrop {
-  display: none;
-}
-
-/* 参考站文章页侧栏：距左上 64px、192px 宽；返回链接在上，下面是安静的浅灰标题列表 */
+/* 桌面：左侧固定目录，位置与正文首行齐平 */
 .toc {
   position: fixed;
-  top: 64px;
+  top: 160px;
   bottom: 24px;
   left: 64px;
-  width: 192px;
-  padding-top: 4px;
+  width: min(200px, calc((100vw - var(--column)) / 2 - 104px));
   display: flex;
   flex-direction: column;
   z-index: 25;
+  font-size: 14px;
+  line-height: 20px;
 }
 
-.toc-back,
-.issue-back {
+.toc-back {
   flex-shrink: 0;
   align-self: flex-start;
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  margin-bottom: 40px;
-  font-size: 14px;
-  line-height: 20px;
+  margin-bottom: 20px;
   color: var(--faint);
   text-decoration: none;
   transition: color 0.15s ease-out;
 }
 
 .toc-back-arrow {
-  font-size: 18px;
+  font-size: 15px;
   line-height: 1;
 }
 
-.toc-back:hover,
-.issue-back:hover {
+.toc-back:hover {
   color: var(--strong);
-}
-
-.issue-back {
-  display: none;
-  margin-bottom: 32px;
-  font-size: 15px;
 }
 
 .toc nav {
@@ -436,122 +360,127 @@ textarea {
 }
 
 .toc-list > li + li {
-  margin-top: 8px;
-}
-
-/* 章与章之间多留一点空，代替缩进层级 */
-.toc-list > li:has(> .toc-chapter):not(:first-child) {
-  margin-top: 20px;
+  margin-top: 4px;
 }
 
 .toc-list a {
   display: block;
-  font-size: 14px;
-  line-height: 20px;
   color: var(--faint);
   text-decoration: none;
   text-wrap: pretty;
   transition: color 0.15s ease-out;
 }
 
-.toc-list a.toc-section {
-  padding-left: 12px;
-}
-
-.toc-list a[aria-current] {
-  color: var(--body);
-}
-
-.toc-list a:hover {
-  color: var(--strong);
-}
-
-.issue {
-  width: min(576px, 100% - 64px);
-  margin: 0 auto;
-  padding: 64px 0 96px;
-}
-
-.issue-head {
-  margin-bottom: 24px;
-}
-
-.issue-date {
-  margin-bottom: 8px;
-  font-size: 14px;
-  line-height: 20px;
+.toc-chapter[data-open] {
   color: var(--muted);
 }
 
-.issue-head .lead a {
-  text-decoration: underline;
-  text-decoration-color: var(--faint);
-  text-underline-offset: 3px;
+.toc-list a.toc-section {
+  padding-left: 12px;
+  font-size: 13px;
+}
+
+.toc-list a[aria-current] {
+  color: var(--strong);
+}
+
+/* 只在有悬停能力的设备上变深，避免触屏点按后横向导航里留下「假高亮」 */
+@media (hover: hover) {
+  .toc-list a:hover {
+    color: var(--strong);
+  }
+}
+
+.issue {
+  padding: 160px 0 120px;
+}
+
+.issue-head {
+  padding-bottom: 36px;
+  border-bottom: 1px solid var(--line);
+}
+
+.issue-title {
+  font-size: 15px;
+  line-height: 26px;
+  font-weight: 500;
+  color: var(--strong);
+}
+
+.issue-meta {
+  margin-top: 4px;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.lead {
+  margin-top: 16px;
+  color: var(--ink);
+  text-wrap: pretty;
+  overflow-wrap: break-word;
 }
 
 .issue-chapter {
-  margin-top: 72px;
+  margin-top: 44px;
+}
+
+.issue-chapter + .issue-chapter {
+  padding-top: 44px;
+  border-top: 1px solid var(--line);
 }
 
 .chapter-title {
-  font-weight: 700;
-  font-size: 32px;
-  line-height: 40px;
-  letter-spacing: -0.025em;
-  color: var(--strong);
-  margin-bottom: 32px;
-  padding-top: 24px;
-  border-top: 1px solid var(--strong);
-  text-wrap: balance;
-  scroll-margin-top: 24px;
+  margin-bottom: 16px;
+  font-size: 15px;
+  line-height: 26px;
+  font-weight: 400;
+  color: var(--muted);
+  scroll-margin-top: 40px;
 }
 
 .prose {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 16px;
   color: var(--body);
-  font-size: 16px;
-  line-height: 24px;
 }
 
 .prose section {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 14px;
 }
 
 .prose h3 {
-  margin-top: 48px;
-  padding-bottom: 8px;
-  border-bottom: 1px solid var(--line);
+  margin-top: 24px;
+  font-size: 15px;
+  line-height: 26px;
   font-weight: 600;
-  font-size: 22px;
-  line-height: 30px;
-  letter-spacing: -0.01em;
   color: var(--strong);
-  scroll-margin-top: 32px;
+  scroll-margin-top: 40px;
 }
 
-.prose > section:first-child > h3 {
+.prose > section:first-child > h3,
+.prose > p + section > h3:first-child {
   margin-top: 0;
 }
 
-.prose p {
+.prose p,
+.prose li {
   text-wrap: pretty;
-  overflow-wrap: break-word;
+  overflow-wrap: anywhere;
 }
 
 .prose a {
   text-decoration: underline;
-  text-decoration-color: var(--faint);
-  text-underline-offset: 3px;
-  transition: color 0.15s ease-out, text-decoration-color 0.15s ease-out;
+  text-decoration-color: var(--underline);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+  transition: color 0.15s ease-out;
 }
 
 .prose a:hover {
   color: var(--strong);
-  text-decoration-color: currentColor;
 }
 
 .term {
@@ -562,14 +491,10 @@ textarea {
 .bullets {
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  margin-left: 20px;
+  gap: 10px;
+  margin-left: 18px;
   padding: 0;
   list-style: disc outside;
-}
-
-.bullets li {
-  overflow-wrap: break-word;
 }
 
 .bullets li::marker {
@@ -578,62 +503,60 @@ textarea {
 
 .meta,
 .inline-meta {
-  font-size: 14px;
+  font-size: 13px;
   line-height: 20px;
   color: var(--muted);
 }
 
-/* 读数：大号数字 + 小字说明，两列 */
+/* 读数：细边框小卡片，数字适度着色 */
 .figures {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  gap: 12px;
+  gap: 10px;
 }
 
 .figure {
-  padding: 16px 20px;
+  padding: 14px 16px;
+  border: 1px solid var(--line);
   border-radius: 12px;
-  background: var(--panel);
+  background: var(--card);
 }
 
 .figure-label {
-  font-size: 14px;
+  font-size: 13px;
   line-height: 20px;
   color: var(--muted);
 }
 
 .figure-value {
-  margin-top: 4px;
-  font-size: 32px;
-  line-height: 1.2;
-  font-weight: 600;
-  letter-spacing: -0.01em;
+  margin-top: 2px;
+  font-size: 26px;
+  line-height: 1.25;
+  font-weight: 500;
   color: var(--strong);
   font-variant-numeric: tabular-nums;
 }
 
 .figure-unit {
   margin-left: 6px;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 400;
-  letter-spacing: 0;
   color: var(--faint);
 }
 
 .figure-sub {
-  font-size: 14px;
+  font-size: 13px;
   line-height: 20px;
-  color: var(--body);
+  color: var(--muted);
 }
 
 /* 提示框 */
 .note {
-  padding: 16px 20px;
+  padding: 12px 16px;
   border-radius: 12px;
   background: var(--panel);
 }
 
-/* 提示框的轻重只体现在标题颜色上，不加任何单边描边 */
 .note-warning .note-title {
   color: var(--warn);
 }
@@ -645,13 +568,13 @@ textarea {
 .note-title {
   font-weight: 500;
   color: var(--strong);
-  margin-bottom: 4px;
+  margin-bottom: 2px;
 }
 
 /* 表格 */
 .table-wrap {
   overflow-x: auto;
-  border-radius: 4px;
+  max-width: 100%;
 }
 
 table {
@@ -663,7 +586,7 @@ table {
 
 th,
 td {
-  padding: 10px 12px 10px 0;
+  padding: 8px 12px 8px 0;
   text-align: start;
   border-bottom: 1px solid var(--line);
   vertical-align: top;
@@ -675,8 +598,8 @@ td:last-child {
 }
 
 th {
-  font-weight: 500;
-  font-size: 12px;
+  font-weight: 400;
+  font-size: 13px;
   color: var(--muted);
   white-space: nowrap;
 }
@@ -695,18 +618,23 @@ td:first-child {
   white-space: nowrap;
 }
 
-/* 柱状图 */
+/* 柱状图：像正文里的一张图——贴合正文宽度的细边框卡片，下方居中轻量图注与逐日数值 */
 .chart {
-  padding: 20px 20px 12px;
+  margin: 8px 0;
+}
+
+.chart-card {
+  padding: 20px 16px 10px;
+  border: 1px solid var(--line);
   border-radius: 12px;
-  background: var(--panel);
+  background: var(--card);
 }
 
 .chart-plot {
   display: flex;
   align-items: flex-end;
   gap: 2px;
-  height: 160px;
+  height: 150px;
   padding-top: 24px;
   border-bottom: 1px solid var(--line);
 }
@@ -721,15 +649,15 @@ td:first-child {
 }
 
 .chart-bar {
-  width: min(20px, 70%);
+  width: min(18px, 70%);
   min-height: 1px;
-  border-radius: 4px 4px 0 0;
+  border-radius: 3px 3px 0 0;
   background: var(--faint);
-  opacity: 0.55;
+  opacity: 0.45;
 }
 
 .chart-bar.is-latest {
-  background: var(--latest, var(--accent));
+  background: var(--latest, var(--strong));
   opacity: 1;
 }
 
@@ -750,7 +678,7 @@ td:first-child {
   margin-top: 6px;
   font-size: 11px;
   line-height: 16px;
-  color: var(--muted);
+  color: var(--faint);
   font-variant-numeric: tabular-nums;
 }
 
@@ -760,23 +688,35 @@ td:first-child {
   white-space: nowrap;
 }
 
-.chart-table {
-  margin-top: 12px;
-  font-size: 14px;
-}
-
-.chart-table summary {
-  cursor: pointer;
+.chart-caption {
+  margin-top: 10px;
+  font-size: 13px;
+  line-height: 20px;
   color: var(--muted);
-  width: fit-content;
+  text-align: center;
 }
 
-.chart-table summary:hover {
-  color: var(--strong);
+.chart-values {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 0 20px;
+  font-size: 12px;
+  line-height: 20px;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
 }
 
-.chart-table .table-wrap {
-  margin-top: 8px;
+.chart-values li {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.chart-values-day {
+  color: var(--faint);
 }
 
 /* 关键数字着色：颜色表达含义（恐惧/贪婪区间、涨跌、冷热），见 src/lib/tone.ts */
@@ -907,25 +847,27 @@ td:first-child {
   color: var(--muted);
 }
 
-/* 上一章 / 下一章 */
+/* 上一期 / 下一期 */
 .pager {
   display: flex;
   justify-content: space-between;
   gap: 24px;
   margin-top: 64px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
 }
 
 .pager a {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
+  display: flex;
+  flex-direction: column;
   max-width: 50%;
-  font-size: 14px;
-  line-height: 20px;
-  font-weight: 500;
-  color: var(--faint);
+  color: var(--ink);
   text-decoration: none;
   transition: color 0.15s ease-out;
+}
+
+.pager-label {
+  color: var(--muted);
 }
 
 .pager a:hover {
@@ -937,109 +879,119 @@ td:first-child {
   text-align: end;
 }
 
-/* ---------- 窄屏 ---------- */
+/* ---------- 窄屏：左侧目录改为顶部吸附的横向章节导航 ---------- */
 
-/* 宽屏：目录占左侧，左上角站点标记让位给「← 全部日报」 */
-@media (min-width: 1152px) {
-  .page-issue .topbar .mark {
-    visibility: hidden;
-  }
-}
-
-/* 576px 正文居中时，左侧 64 + 192 的目录需要视口 ≥ 1152px 才不与正文相碰 */
-@media (max-width: 1151px) {
-  .page-issue .topbar {
-    padding: 12px 16px;
-    background: var(--bg);
-    border-bottom: 1px solid var(--line);
-    pointer-events: auto;
-  }
-
-  .page-issue .chapter-title,
-  .page-issue .prose h3 {
-    scroll-margin-top: 80px;
-  }
-
-  .toc-toggle {
-    display: inline-block;
-  }
-
-  .issue {
-    padding-top: 96px;
-  }
-
-  .issue-back {
-    display: inline-flex;
+/* 540px 正文居中时，左侧 64px 起的目录要至少 ~160px 宽才不挤：视口 ≥ 1080px 才用侧栏 */
+@media (max-width: 1079px) {
+  .page-issue .corner {
+    top: 6px;
+    right: 8px;
   }
 
   .toc {
+    position: sticky;
     top: 0;
-    bottom: 0;
-    left: 0;
-    width: min(320px, 100% - 48px);
-    padding: 80px 24px 0;
+    bottom: auto;
+    left: auto;
+    width: auto;
+    flex-direction: row;
+    align-items: center;
+    gap: 4px;
+    height: 44px;
+    padding: 0 48px 0 12px;
     background: var(--bg);
-    border-right: 1px solid var(--line);
-    box-shadow: 0 0 48px rgb(0 0 0 / 0.12);
-    visibility: hidden;
-    transform: translateX(-100%);
-    transition: transform 0.2s ease-out, visibility 0s linear 0.2s;
+    border-bottom: 1px solid var(--line);
   }
 
-  .toc-open .toc {
-    visibility: visible;
-    transform: none;
-    transition: transform 0.2s ease-out;
+  .toc-back {
+    margin: 0;
+    padding: 0 8px;
+    height: 44px;
   }
 
-  .toc-open .toc-backdrop {
-    display: block;
-    position: fixed;
-    inset: 0;
-    z-index: 24;
-    background: rgb(0 0 0 / 0.2);
+  .toc-back-text {
+    display: none;
+  }
+
+  .toc nav {
+    height: 44px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 0;
+    -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 12px, #000 calc(100% - 16px), transparent 100%);
+    mask-image: linear-gradient(90deg, transparent 0, #000 12px, #000 calc(100% - 16px), transparent 100%);
+  }
+
+  .toc-list {
+    display: flex;
+    height: 100%;
+    gap: 2px;
+    padding: 0 12px;
+  }
+
+  .toc-list > li + li,
+  .toc-list > li:has(> .toc-chapter):not(:first-child) {
+    margin-top: 0;
+  }
+
+  .toc-item-section {
+    display: none !important;
+  }
+
+  .toc-list a.toc-chapter {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    padding: 0 8px;
+    white-space: nowrap;
+  }
+
+  /* 窄屏只列章：当前章（含正在读它的某一节）显示为深色 */
+  .toc-chapter[data-open] {
+    color: var(--strong);
+  }
+
+  .issue {
+    padding-top: 40px;
+  }
+
+  .chapter-title,
+  .prose h3 {
+    scroll-margin-top: 64px;
   }
 }
 
 @media (max-width: 640px) {
+  .column {
+    width: calc(100% - 40px);
+  }
+
   .index {
-    padding-top: 96px;
-    padding-bottom: 220px;
+    padding-top: 72px;
+    padding-bottom: 80px;
   }
 
-  .display {
-    font-size: 36px;
-    line-height: 44px;
-  }
-
-  .row-title {
-    font-size: 16px;
-  }
-
-  .row-desc {
+  body {
     font-size: 15px;
-    line-height: 22px;
+    line-height: 26px;
   }
 
-  .issue {
-    padding-top: 88px;
+  .row {
+    gap: 12px;
   }
 
-  .chapter-title {
-    font-size: 30px;
-    line-height: 36px;
+  .row-meta {
+    font-size: 13px;
   }
 
-  .book {
-    bottom: calc(-1 * var(--h) + 84px - var(--drop));
-    transform: translateX(calc(var(--x) * 0.6)) rotate(var(--r)) scale(0.8);
+  .entry-meta,
+  .entry-body {
+    margin-left: 0;
   }
 
-  .book:hover,
-  .book:focus-visible {
-    transform: translateX(calc(var(--x) * 0.6)) rotate(var(--r)) scale(0.8) translateY(-24px);
+  .pager a {
+    max-width: 48%;
   }
-
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1047,5 +999,6 @@ td:first-child {
   *::before,
   *::after {
     transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

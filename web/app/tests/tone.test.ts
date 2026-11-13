@@ -32,6 +32,18 @@ test("正文关键数字：样例要点逐条", () => {
   assert.deepEqual(toned("较 11-11 的 29 下降 1 点"), [["下降 1 点", "down"]]);
 });
 
+test("日期不被误当成分数着色：完整日期后的分数才着色", () => {
+  // 2026-11-13 期要点原句：曾把「2026」的「202」按 Trench 冷热着成红色
+  assert.deepEqual(toned("TehcScreener Trench 2026-11-11 为 38（冷），较 11-10 的 31 上升 7 分。"), [
+    ["38（冷）", "cold"],
+    ["上升 7 分", "up"],
+  ]);
+  assert.deepEqual(toned("Trench 2026-11-11"), []);
+  // 恐惧贪婪写法不支持中间夹日期：宁可整段不着色，也不能把「202」当读数
+  assert.deepEqual(toned("恐惧贪婪指数 2026-11-12 为 20（极度恐惧）"), []);
+  assert.deepEqual(toned("Trench 1234"), []);
+});
+
 test("切分后能原样拼回，没有关键数字时整段不着色", () => {
   for (const s of ["恐惧与贪婪 80（极度贪婪），升 5 点", "r/Monad 有 3 篇新帖", "", "升级到 v2"]) {
     assert.equal(toneSegments(s).map((x) => x.text).join(""), s);
