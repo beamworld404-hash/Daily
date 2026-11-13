@@ -254,8 +254,12 @@ export function IssuePage({ report, chapterId, sectionId }: { report: Report; ch
  */
 export function HomePage() {
   const entries = homeEntries(reports);
-  // 从全文页中段点「← 全部日报」回来时，主页从顶部开始
-  useLayoutEffect(() => window.scrollTo(0, 0), []);
+  // 从全文页中段点「← 全部日报」回来时，主页从顶部开始。
+  // 必须用花括号、不返回值：新版 Chromium 的 scrollTo 返回 Promise，若被当作 effect
+  // 返回值，React 会在主页卸载（点进某期）时把它当清理函数调用而抛错，整页白屏。
+  useLayoutEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   return (
     <div className="page page-index">
       <TopBar />
