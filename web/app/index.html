@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="zh-Hans">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow, noarchive" />
+    <meta name="referrer" content="no-referrer" />
+    <meta name="color-scheme" content="light dark" />
+    <title>关注清单日报</title>
+    <script>
+      // 首屏前定好深浅色，避免闪烁；与 App.tsx 的 useTheme 同一个 key
+      try {
+        var t = localStorage.getItem("daily-theme");
+        var dark = t === "dark" || (!t && matchMedia("(prefers-color-scheme: dark)").matches);
+        document.documentElement.dataset.theme = dark ? "dark" : "light";
+      } catch (e) {}
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <noscript>这个页面需要 JavaScript 才能显示日报。</noscript>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

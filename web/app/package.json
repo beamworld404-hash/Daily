@@ -1,0 +1,30 @@
+{
+  "name": "daily-report-site",
+  "private": true,
+  "version": "2.0.0",
+  "type": "module",
+  "description": "关注清单日报网站（React 19 + Vite）",
+  "engines": {
+    "node": ">=20.19"
+  },
+  "scripts": {
+    "check": "python3 ../check.py",
+    "dev": "vite --host 127.0.0.1 --port 5173 --strictPort",
+    "build": "npm run check && tsc -b && vite build",
+    "preview": "vite preview --host 127.0.0.1 --port 4173 --strictPort",
+    "typecheck": "tsc -b",
+    "test": "node --test --experimental-strip-types tests/*.test.ts"
+  },
+  "dependencies": {
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.6",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.3.0",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.8"
+  }
+}

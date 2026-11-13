@@ -1,0 +1,6 @@
+# 关注清单日报网站：生成产物不入库，由 web/build.py 从数据重新生成
+web/dist/
+__pycache__/
+*.pyc
+.env
+.env.*

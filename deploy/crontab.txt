@@ -1,0 +1,11 @@
+# >>> daily-report auto publish (deploy/crontab.txt，由 deploy/install-cron.sh 安装) >>>
+# 本机系统时区为 Asia/Shanghai；CRON_TZ 对 Ubuntu 自带 cron 无效，仅作说明，脚本内部也固定 TZ=Asia/Shanghai。
+CRON_TZ=Asia/Shanghai
+15,30,45 9 * * * /home/ubuntu/Daily/deploy/daily-cron.sh >> /home/ubuntu/briefs/daily-report-incr-design/logs/cron.log 2>&1
+0,15 10 * * * /home/ubuntu/Daily/deploy/daily-cron.sh >> /home/ubuntu/briefs/daily-report-incr-design/logs/cron.log 2>&1
+30 10 * * * /home/ubuntu/Daily/deploy/daily-cron.sh --final >> /home/ubuntu/briefs/daily-report-incr-design/logs/cron.log 2>&1
+# <<< daily-report auto publish <<<
+# >>> daily-report auto fetch (deploy/crontab.txt，由 deploy/install-cron.sh 安装) >>>
+# 每天 08:40（上海时间）本机抓取公开数据出报，校验通过后投放到 /home/ubuntu/briefs/incoming/，09:15 起由上面的发布任务发布。
+40 8 * * * /home/ubuntu/Daily/deploy/fetch-report.sh >> /home/ubuntu/briefs/daily-report-incr-design/logs/cron.log 2>&1
+# <<< daily-report auto fetch <<<
