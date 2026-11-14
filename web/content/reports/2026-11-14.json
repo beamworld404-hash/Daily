@@ -1,0 +1,552 @@
+{
+  "schema_version": 1,
+  "date": "2026-11-14",
+  "edition": "早报",
+  "issued_at": "2026-11-14 08:40",
+  "coverage": "自上次正式早报 2026-11-13 取数开始 2026-11-13 08:40:01（北京时间）至本次取数 2026-11-14 08:40:09（北京时间），并包含上一自然日 2026-11-13。取数自 08:40:01 起，由东京本机脚本自动抓取。",
+  "summary": "DefiLlama 最新完整日为 UTC 11-12：收入 FOMO $295.50K（占历史最高 16.02%），GMGN $170.26K（占历史最高 2.97%）；FOMO 此前报道的读数已被数据源修订。TehcScreener Trench 11-12 为 35（冷），较 11-11 的 38 下降 3 分。恐惧贪婪指数 13（极度恐惧），较 11-13 的 20 下降 7 点。",
+  "highlights": [
+    "DefiLlama 最新完整日 UTC 2026-11-12：FOMO $295.50K（占历史最高 16.02%）；GMGN $170.26K（占历史最高 2.97%）。修订：FOMO 的 UTC 11-11 读数已由 DefiLlama 从上一期报道的 $341.77K 修订为 $341.71K。",
+    "TehcScreener Trench 2026-11-12 为 35（冷），较 11-11 的 38 下降 3 分。",
+    "恐惧贪婪指数 13（极度恐惧），较 11-13 的 20 下降 7 点。",
+    "DexScreener 最新代币资料按 24h 成交额前 5：CSI、SWJ、PEACEFROG、KOSMIK、BC。",
+    "r/Monad 新帖 RSS 本窗口有 1 篇新帖；rarefriends 公开仓库与 PR 暂无新更新。",
+    "本期没有 X 摘要：出报改由本机脚本完成，本机没有关注时间线的 X 连接器。"
+  ],
+  "notices": [
+    {
+      "tone": "warning",
+      "title": "数据修订",
+      "text": "FOMO 的 UTC 11-11 读数已由 DefiLlama 从上一期报道的 $341.77K 修订为 $341.71K。下方收入图表使用修订后的值。"
+    }
+  ],
+  "fng": {
+    "source": "Alternative.me",
+    "latest": {
+      "date": "2026-11-14",
+      "value": 13,
+      "class_en": "Extreme Fear",
+      "class_zh": "极度恐惧"
+    },
+    "previous": {
+      "date": "2026-11-13",
+      "value": 20,
+      "class_en": "Extreme Fear",
+      "class_zh": "极度恐惧"
+    }
+  },
+  "revenue": {
+    "source": "DefiLlama dailyRevenue",
+    "caption": "最新完整日 UTC 2026-11-12。UTC 11-13 尚未出现在数据中。不是实时行情。",
+    "dates": [
+      "2026-10-30",
+      "2026-10-31",
+      "2026-11-01",
+      "2026-11-02",
+      "2026-11-03",
+      "2026-11-04",
+      "2026-11-05",
+      "2026-11-06",
+      "2026-11-07",
+      "2026-11-08",
+      "2026-11-09",
+      "2026-11-10",
+      "2026-11-11",
+      "2026-11-12"
+    ],
+    "protocols": [
+      {
+        "name": "FOMO",
+        "url": "https://defillama.com/protocol/fomo",
+        "values": [
+          374169,
+          208556,
+          189674,
+          267409,
+          292890,
+          369525,
+          308572,
+          270335,
+          215908.02,
+          244925,
+          288990.01,
+          299969,
+          341710,
+          295495
+        ],
+        "ath": {
+          "usd": 1844534,
+          "date": "2026-09-04"
+        }
+      },
+      {
+        "name": "GMGN",
+        "url": "https://defillama.com/protocol/gmgn",
+        "values": [
+          199668,
+          138176,
+          127341,
+          93445,
+          158385,
+          150084,
+          173678,
+          162335,
+          127465,
+          145697,
+          179035,
+          172487,
+          229169,
+          170264
+        ],
+        "ath": {
+          "usd": 5737132,
+          "date": "2025-10-08"
+        }
+      }
+    ],
+    "notes": [
+      "FOMO 的 UTC 11-11 读数已由 DefiLlama 从上一期报道的 $341.77K 修订为 $341.71K。图表使用修订后的值。"
+    ]
+  },
+  "tehc": {
+    "source": "tehcscreener.com，底层 Allium",
+    "trench": {
+      "date": "2026-11-12",
+      "score": 35,
+      "label": "cold",
+      "label_zh": "冷",
+      "note": "较 11-11 的 38 下降 3 分。",
+      "history": [
+        {
+          "date": "2026-11-08",
+          "score": 24
+        },
+        {
+          "date": "2026-11-09",
+          "score": 31
+        },
+        {
+          "date": "2026-11-10",
+          "score": 31
+        },
+        {
+          "date": "2026-11-11",
+          "score": 38
+        },
+        {
+          "date": "2026-11-12",
+          "score": 35
+        }
+      ],
+      "components": [
+        {
+          "name": "发射台成交额",
+          "usd": 1514172701.1428108,
+          "percentile": 46
+        },
+        {
+          "name": "新发射",
+          "count": 63217,
+          "percentile": 42
+        },
+        {
+          "name": "发射台收入",
+          "usd": 980525.2328214825,
+          "percentile": 25
+        },
+        {
+          "name": "机器人成交额",
+          "usd": 167153361.22899184,
+          "percentile": 29
+        },
+        {
+          "name": "机器人手续费",
+          "usd": 1171212.4848996063,
+          "percentile": 19
+        }
+      ],
+      "components_note": "接口 method.weights：发射台成交额 20%、新发射 10%、发射台收入 15%、机器人成交额 30%、机器人手续费 25%。分项合计与发射台、机器人接口汇总不必相同，分别按各自接口列示。"
+    },
+    "launchpads": {
+      "caption": "window=1d，截至 2026-11-12。",
+      "total": {
+        "volume_usd": 360669722.4862037,
+        "launches": 43568
+      },
+      "rows": [
+        {
+          "name": "solana / pumpfun",
+          "volume_usd": 326993934.5629213,
+          "launches": 41846
+        },
+        {
+          "name": "robinhood / ponsfamily",
+          "volume_usd": 14922519.424294533,
+          "launches": 743
+        },
+        {
+          "name": "solana / stonk",
+          "volume_usd": 13397988.97654597,
+          "launches": 574
+        },
+        {
+          "name": "robinhood / long",
+          "volume_usd": 3012870.1633280464,
+          "launches": 329
+        },
+        {
+          "name": "solana / letsbonk",
+          "volume_usd": 1971281.2660427147,
+          "launches": 21
+        },
+        {
+          "name": "arc / argus",
+          "volume_usd": 141087.43095966114,
+          "launches": 0
+        },
+        {
+          "name": "base / The Stonks Exchange",
+          "volume_usd": 139380.42504856642,
+          "launches": 15
+        },
+        {
+          "name": "robinhood / flap",
+          "volume_usd": 54439.917438897144,
+          "launches": 39
+        },
+        {
+          "name": "solana / Rise",
+          "volume_usd": 36220.31962398672,
+          "launches": 1
+        }
+      ]
+    },
+    "bots": {
+      "caption": "window=1d，截至 2026-11-12；按成交额列前 10，合计含全部 10 个。",
+      "total": {
+        "volume_usd": 166616114.53,
+        "fees_usd": 1168426.04
+      },
+      "rows": [
+        {
+          "name": "Axiom",
+          "volume_usd": 50525518.64,
+          "fees_usd": 438044.76
+        },
+        {
+          "name": "fomo",
+          "volume_usd": 41347681.51,
+          "fees_usd": 203760.49
+        },
+        {
+          "name": "pumpfun app",
+          "volume_usd": 35810890.37,
+          "fees_usd": 116894.11
+        },
+        {
+          "name": "GMGN",
+          "volume_usd": 22284935.14,
+          "fees_usd": 232617.58
+        },
+        {
+          "name": "Terminal",
+          "volume_usd": 10498784.0,
+          "fees_usd": 130889.51
+        },
+        {
+          "name": "Basedbot",
+          "volume_usd": 3018966.8,
+          "fees_usd": 13948.92
+        },
+        {
+          "name": "Trojan",
+          "volume_usd": 1409751.34,
+          "fees_usd": 15408.78
+        },
+        {
+          "name": "Maestro",
+          "volume_usd": 888141.47,
+          "fees_usd": 6677.78
+        },
+        {
+          "name": "Photon",
+          "volume_usd": 457168.93,
+          "fees_usd": 4669.93
+        },
+        {
+          "name": "Bonkbot",
+          "volume_usd": 374276.33,
+          "fees_usd": 5514.18
+        }
+      ],
+      "warning": "TehcScreener 中 GMGN 手续费 $232.62K、fomo 手续费 $203.76K（截至 2026-11-12），与 DefiLlama dailyRevenue（FOMO $295.50K、GMGN $170.26K，均为 UTC 11-12）口径不同，不可直接对照或替换。"
+    },
+    "chains": {
+      "caption": "TehcScreener /chains。Solana、Base、Robinhood、HyperEVM、Arc 的 latest 截至 2026-11-12；Elysium 截至 2026-11-13，日期不一致。",
+      "rows": [
+        {
+          "name": "Solana",
+          "dex_volume_usd": 3136297990.0567956,
+          "wallets": 926670,
+          "date": "2026-11-12"
+        },
+        {
+          "name": "Base",
+          "dex_volume_usd": 1315686932.9421644,
+          "wallets": 68682,
+          "date": "2026-11-12"
+        },
+        {
+          "name": "Robinhood",
+          "dex_volume_usd": 883118904.1743771,
+          "wallets": 66387,
+          "date": "2026-11-12"
+        },
+        {
+          "name": "HyperEVM",
+          "dex_volume_usd": 82358096.35783693,
+          "wallets": 3063,
+          "date": "2026-11-12"
+        },
+        {
+          "name": "Elysium",
+          "dex_volume_usd": 41882684.48358147,
+          "wallets": 13751,
+          "date": "2026-11-13"
+        },
+        {
+          "name": "Arc",
+          "dex_volume_usd": 15620081.966089,
+          "wallets": 3702,
+          "date": "2026-11-12"
+        }
+      ]
+    },
+    "caption": "status.synced_at 为 2026-11-13 09:34:49 UTC（2026-11-13 17:34:49 北京时间）。Trench 数据日 2026-11-12。发射台 through 2026-11-12。机器人 through 2026-11-12。"
+  },
+  "dexscreener": {
+    "title": "DexScreener 最新代币资料 · 按 24h 成交额前 5",
+    "fetched_at": "2026-11-14 08:40:09（北京时间）",
+    "caption": "取自 DexScreener 官方 API：GET /token-profiles/latest/v1 返回的最新代币资料（token profiles）列表，按资料时间给出，不是「新池」榜，也不按热度排序；再用 GET /tokens/v1/{chainId}/{地址} 取交易对数据，按 24h 成交额排序取前 5。与旧 Defined / Codex「≤24h 新池 · trendingScore4」榜口径不同，不能与之直接比较。上榜不代表项目质量或安全，非交易建议。",
+    "changes": "与上一期（2026-11-13，抓取于 2026-11-13 08:40:08（北京时间））同口径榜相比：新上 CSI、SWJ、PEACEFROG、KOSMIK、BC；掉出 Humpback、SHARKBUX、scat、Food Cat、REVIVE。",
+    "tokens": [
+      {
+        "symbol": "CSI",
+        "chain": "solana",
+        "url": "https://dexscreener.com/solana/8f95ufdbhsxaercmcdxboe3afepwlukzomhkgsydtp5m",
+        "address": "CRwB4GxVDM4Bnh8QMqh9Nk8UZNscced3xec824vxpump",
+        "dex": "pumpswap",
+        "liquidity_usd": 92758.54,
+        "volume_24h_usd": 1083208.78,
+        "narrative": null,
+        "pair_created_at": "2026-11-14 06:37",
+        "status": "新上"
+      },
+      {
+        "symbol": "SWJ",
+        "chain": "bsc",
+        "url": "https://dexscreener.com/bsc/0x3675c44280145dcbaf9bf32cf6f45c9c6bcef9a0",
+        "address": "0x26040E441a7369cCC7bD8bfE96F596DF4dB87777",
+        "dex": "pancakeswap",
+        "liquidity_usd": 54674.65,
+        "volume_24h_usd": 607783.44,
+        "narrative": null,
+        "pair_created_at": "2026-11-14 06:07",
+        "status": "新上"
+      },
+      {
+        "symbol": "PEACEFROG",
+        "chain": "solana",
+        "url": "https://dexscreener.com/solana/8cxat7ipj8kam2c1krfm33qahgghms3ntsq41q6pygdc",
+        "address": "m7SihqeaWimE1zpBzjHBwKJbbhuaczX5fHvGoNupump",
+        "dex": "pumpswap",
+        "liquidity_usd": 33365.27,
+        "volume_24h_usd": 319661.38,
+        "narrative": null,
+        "pair_created_at": "2026-11-14 04:36",
+        "status": "新上"
+      },
+      {
+        "symbol": "KOSMIK",
+        "chain": "solana",
+        "url": "https://dexscreener.com/solana/edxzg9m5rwuxon5ebulzjtkhfjhvzdarc1g4ttjjgn5n",
+        "address": "BApgNbjD25PHFft8WNATeL6gwpFFucEn5VBg2VHDpump",
+        "dex": "pumpswap",
+        "liquidity_usd": 21654.62,
+        "volume_24h_usd": 313068.87,
+        "narrative": null,
+        "pair_created_at": "2026-11-14 05:05",
+        "status": "新上"
+      },
+      {
+        "symbol": "BC",
+        "chain": "solana",
+        "url": "https://dexscreener.com/solana/29f8jajaehg446y5pqfuighi664yaxvlua9i7xcyh1n3",
+        "address": "J4MsEuqfAnCFAE1E7zfN1MrK7X1msFHtGFTySXi2pump",
+        "dex": "pumpswap",
+        "liquidity_usd": 11446.21,
+        "volume_24h_usd": 265262.65,
+        "narrative": null,
+        "pair_created_at": "2026-11-14 07:34",
+        "status": "新上"
+      }
+    ],
+    "method": "本次资料列表共 30 条，去重后 30 个代币，分布在 4 条链；按链分批（每批 ≤30 个地址）请求 /tokens/v1。每个代币只取它作为 baseToken 的交易对中 liquidity.usd 最高的一个；要求流动性 ≥$1.00K、volume.h24 ≥$1.00K，按 volume.h24 降序、同额按流动性降序。符合条件 23 个；未入选：无以该代币为 base 的交易对 2 个；接口未给流动性（如仍在联合曲线上） 5 个。金额为抓取时刻 2026-11-14 08:40:09（北京时间）接口返回值。链接为接口返回的交易对页面 url（已核对为 https://dexscreener.com/{链}/… 且链一致）。未调用 Defined / Codex，未爬网页。项目资料描述由项目方自行提交，未经核实，故不写叙述。"
+  },
+  "reddit": {
+    "subreddit": "r/Monad",
+    "url": "https://www.reddit.com/r/Monad/",
+    "since": "2026-11-13 08:40（北京时间）",
+    "summary": "新帖 RSS 中按条目更新时间自 2026-11-13 08:40（北京时间）起有 1 篇新帖，下面列出标题与作者，不做内容概括。",
+    "note": "本次未取评论 RSS，评论数记为 --。这是论坛讨论，不是行情判断。",
+    "posts": [
+      {
+        "title": "Day 1 of butchering \"Big Mon\" until mon price gets big",
+        "url": "https://www.reddit.com/r/Monad/comments/1xvkn3z/day_1_of_butchering_big_mon_until_mon_price_gets/",
+        "author": "/u/Key-Efficiency1472",
+        "comments": null
+      }
+    ]
+  },
+  "github": {
+    "org": "rarefriends",
+    "url": "https://github.com/rarefriends",
+    "updated": false,
+    "text": "自 2026-11-13 08:40（北京时间）起公开仓库与 PR 暂无新更新。仅公开仓库。"
+  },
+  "methods": {
+    "properties": [
+      {
+        "label": "本次取数",
+        "value": "2026-11-14 08:40:01–08:40:09（北京时间）；东京本机 deploy/fetch-report.sh 自动出报"
+      },
+      {
+        "label": "新请求",
+        "value": "公开 HTTP 请求 17 次，17 次 200。未使用任何密钥；未请求评论 RSS；未读取 X。"
+      },
+      {
+        "label": "原始响应",
+        "value": "本机仓库外 run-20261114-084001（logs/runs 下）"
+      }
+    ],
+    "checklist": [
+      {
+        "text": "r/Monad 新帖 RSS",
+        "status": "ok",
+        "meta": "新请求 1 次（200）；RSS 共 25 条，窗口内 1 篇"
+      },
+      {
+        "text": "r/Monad 评论 RSS",
+        "status": "skipped",
+        "meta": "本次未请求，避免为补评论数增加抓取；评论数记为 --"
+      },
+      {
+        "text": "rarefriends 仓库与 PR",
+        "status": "ok",
+        "meta": "新请求 3 次（200 ×3）；本窗口无推送、新仓库或 PR 变动"
+      },
+      {
+        "text": "GMGN / FOMO dailyRevenue",
+        "status": "ok",
+        "meta": "新请求 2 次（200 ×2）；最新完整日 UTC 2026-11-12；FOMO 有历史读数被数据源修订"
+      },
+      {
+        "text": "TehcScreener",
+        "status": "ok",
+        "meta": "新请求 5 次（200 ×5）；status.synced_at 为 2026-11-13 09:34:49 UTC（2026-11-13 17:34:49 北京时间）。Trench 数据日 2026-11-12。发射台 through 2026-11-12。机器人 through 2026-11-12"
+      },
+      {
+        "text": "恐惧贪婪指数",
+        "status": "ok",
+        "meta": "新请求 1 次（200）；数据日 UTC 2026-11-14"
+      },
+      {
+        "text": "DexScreener 最新代币资料",
+        "status": "ok",
+        "meta": "新请求 5 次（200 ×5）；资料 30 条，符合条件 23 个，取前 5"
+      },
+      {
+        "text": "关注账号 X 摘要",
+        "status": "skipped",
+        "meta": "本机没有 beam 的 X 关注时间线连接器，本期未抓取，不写 X 摘要"
+      }
+    ],
+    "sources": [
+      {
+        "title": "Reddit",
+        "detail": "只用官方新帖 Atom RSS（/r/Monad/new/.rss），按条目更新时间筛选。不取评论 RSS，评论数写 --。无新帖只指新帖 RSS 为空，不等于无讨论。"
+      },
+      {
+        "title": "GitHub",
+        "detail": "未登录公开 REST：先拉组织仓库再按库拉 PR（state=all，按更新时间倒序），未使用 search，未克隆仓库。仅可见公开仓库。"
+      },
+      {
+        "title": "DefiLlama",
+        "detail": "新请求 summary/fees/gmgn 与 summary/fees/fomo（dataType=dailyRevenue）。只取已公布的完整 UTC 日，最新为 2026-11-12。FOMO 的 UTC 11-11 读数已由 DefiLlama 从上一期报道的 $341.77K 修订为 $341.71K。不是实时行情。"
+      },
+      {
+        "title": "TehcScreener",
+        "detail": "仅官方 /api/v1：status、trench、launchpads（window=1d）、bots（window=1d）、chains。未调未文档化接口，未请求 RWA。"
+      },
+      {
+        "title": "Alternative.me",
+        "detail": "官方 https://api.alternative.me/fng/?limit=2。数据日 UTC 2026-11-14，上一日为 11-13。"
+      },
+      {
+        "title": "DexScreener",
+        "detail": "官方 HTTP API（docs.dexscreener.com/api/reference）：GET /token-profiles/latest/v1（限 60 次/分）取最新代币资料，GET /tokens/v1/{chainId}/{tokenAddresses}（限 300 次/分，每次 ≤30 个地址）取交易对。无需密钥。不再调用 Defined / Codex。"
+      },
+      {
+        "title": "X",
+        "detail": "本期未读取 X。出报改由东京本机脚本自动完成，本机没有 beam 的 X 连接器；不抓网页、不补写摘要。"
+      }
+    ],
+    "links": [
+      {
+        "title": "r/Monad",
+        "site": "Reddit",
+        "url": "https://www.reddit.com/r/Monad/"
+      },
+      {
+        "title": "rarefriends",
+        "site": "GitHub",
+        "url": "https://github.com/rarefriends"
+      },
+      {
+        "title": "FOMO",
+        "site": "DefiLlama",
+        "url": "https://defillama.com/protocol/fomo"
+      },
+      {
+        "title": "GMGN",
+        "site": "DefiLlama",
+        "url": "https://defillama.com/protocol/gmgn"
+      },
+      {
+        "title": "TehcScreener",
+        "site": "tehcscreener.com",
+        "url": "https://tehcscreener.com/"
+      },
+      {
+        "title": "TehcScreener API 文档",
+        "site": "tehcscreener.com",
+        "url": "https://tehcscreener.com/api"
+      },
+      {
+        "title": "Fear & Greed Index",
+        "site": "Alternative.me",
+        "url": "https://alternative.me/crypto/fear-and-greed-index/"
+      },
+      {
+        "title": "DexScreener API 文档",
+        "site": "docs.dexscreener.com",
+        "url": "https://docs.dexscreener.com/api/reference"
+      },
+      {
+        "title": "DexScreener",
+        "site": "dexscreener.com",
+        "url": "https://dexscreener.com/"
+      }
+    ]
+  }
+}
